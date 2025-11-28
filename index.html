@@ -191,7 +191,7 @@
                                         <div class="event-type-card p-3 rounded-lg text-center cursor-pointer">
                                             <i class="fa-solid fa-coins text-2xl text-yellow-400"></i>
                                             <p class="font-bold mt-1">Paid Scrim</p>
-                                            <p class="text-xs text-gray-400">Fee: 10 TK</p>
+                                            <p class="text-xs text-gray-400" id="paid-fee-text">Fee: 10 TK</p>
                                         </div>
                                     </label>
                                     <label>
@@ -199,7 +199,7 @@
                                         <div class="event-type-card p-3 rounded-lg text-center cursor-pointer relative">
                                             <i class="fa-solid fa-crosshairs text-2xl text-orange-400"></i>
                                             <p class="font-bold mt-1">Practice Match</p>
-                                            <p class="text-xs text-gray-400">Fee: 5 TK</p>
+                                            <p class="text-xs text-gray-400" id="practice-fee-text">Fee: 5 TK</p>
                                         </div>
                                     </label>
                                     <label>
@@ -217,13 +217,32 @@
                         </div>
                         <div class="form-section p-4 rounded-xl space-y-4">
                             <div class="grid grid-cols-2 gap-4">
-                                <div><label for="post-battle-type" class="form-label">Battle Type</label><select id="post-battle-type" class="form-select"><option value="Battle Royal">Battle Royal</option><option value="Clash Squad" disabled>Clash Squad (Soon)</option></select></div>
+                                <div><label for="post-battle-type" class="form-label">Battle Type</label><select id="post-battle-type" class="form-select"><option value="Battle Royal">Battle Royal</option><option value="Clash Squad">Clash Squad</option></select></div>
                                 <div><label for="post-team-type" class="form-label">Team Type</label><select id="post-team-type" class="form-select"><option value="Squad">Squad</option><option value="Duo">Duo</option><option value="Solo">Solo</option></select></div>
                             </div>
                             <div><label for="post-total-slots" class="form-label">Total Slots</label><input id="post-total-slots" type="number" class="form-input bg-gray-800" readonly></div>
                             <div id="entry-fee-container"><label for="post-entry-fee" class="form-label">Entry Fee (TK)</label><input id="post-entry-fee" type="number" placeholder="e.g., 35" class="form-input" required></div>
                         </div>
-                        <div class="form-section p-4 rounded-xl space-y-4"><div class="grid grid-cols-2 gap-4"><div><label for="post-match-date" class="form-label">Match Date</label><input id="post-match-date" type="date" class="form-input" style="color-scheme: dark;" required></div><div><label for="post-num-matches" class="form-label">Number of Matches</label><select id="post-num-matches" class="form-select"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div><div><label for="post-idpass-time" class="form-label">ID Pass Time</label><input id="post-idpass-time" type="time" class="form-input" style="color-scheme: dark;" required></div><div><label for="post-matchstart-time" class="form-label">Match Start Time</label><input id="post-matchstart-time" type="time" class="form-input" style="color-scheme: dark;" required></div></div><div><label class="form-label">Select Maps (<span id="map-selection-count">0</span>/<span id="map-selection-limit">1</span>)</label><div id="map-checkboxes-container" class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm"><div class="map-checkbox"><input type="checkbox" id="map1" value="Bermuda" class="hidden"><label for="map1" class="block text-center p-2 rounded-md cursor-pointer">Bermuda</label></div><div class="map-checkbox"><input type="checkbox" id="map2" value="B Remastered" class="hidden"><label for="map2" class="block text-center p-2 rounded-md cursor-pointer">B Remastered</label></div><div class="map-checkbox"><input type="checkbox" id="map3" value="Purgatory" class="hidden"><label for="map3" class="block text-center p-2 rounded-md cursor-pointer">Purgatory</label></div><div class="map-checkbox"><input type="checkbox" id="map4" value="Kalahari" class="hidden"><label for="map4" class="block text-center p-2 rounded-md cursor-pointer">Kalahari</label></div><div class="map-checkbox"><input type="checkbox" id="map5" value="Alpine" class="hidden"><label for="map5" class="block text-center p-2 rounded-md cursor-pointer">Alpine</label></div><div class="map-checkbox"><input type="checkbox" id="map6" value="NeXTerra" class="hidden"><label for="map6" class="block text-center p-2 rounded-md cursor-pointer">NeXTerra</label></div><div class="map-checkbox"><input type="checkbox" id="map7" value="Solara" class="hidden"><label for="map7" class="block text-center p-2 rounded-md cursor-pointer">Solara</label></div></div></div></div>
+                        <div class="form-section p-4 rounded-xl space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label for="post-match-date" class="form-label">Match Date</label><input id="post-match-date" type="date" class="form-input" style="color-scheme: dark;" required></div>
+                                <div id="num-matches-container"><label for="post-num-matches" class="form-label">Number of Matches</label><select id="post-num-matches" class="form-select"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+                                <div><label for="post-idpass-time" class="form-label">ID Pass Time</label><input id="post-idpass-time" type="time" class="form-input" style="color-scheme: dark;" required></div>
+                                <div><label for="post-matchstart-time" class="form-label">Match Start Time</label><input id="post-matchstart-time" type="time" class="form-input" style="color-scheme: dark;" required></div>
+                            </div>
+                            <div id="map-selection-container">
+                                <label class="form-label">Select Maps (<span id="map-selection-count">0</span>/<span id="map-selection-limit">1</span>)</label>
+                                <div id="map-checkboxes-container" class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                                    <div class="map-checkbox"><input type="checkbox" id="map1" value="Bermuda" class="hidden"><label for="map1" class="block text-center p-2 rounded-md cursor-pointer">Bermuda</label></div>
+                                    <div class="map-checkbox"><input type="checkbox" id="map2" value="B Remastered" class="hidden"><label for="map2" class="block text-center p-2 rounded-md cursor-pointer">B Remastered</label></div>
+                                    <div class="map-checkbox"><input type="checkbox" id="map3" value="Purgatory" class="hidden"><label for="map3" class="block text-center p-2 rounded-md cursor-pointer">Purgatory</label></div>
+                                    <div class="map-checkbox"><input type="checkbox" id="map4" value="Kalahari" class="hidden"><label for="map4" class="block text-center p-2 rounded-md cursor-pointer">Kalahari</label></div>
+                                    <div class="map-checkbox"><input type="checkbox" id="map5" value="Alpine" class="hidden"><label for="map5" class="block text-center p-2 rounded-md cursor-pointer">Alpine</label></div>
+                                    <div class="map-checkbox"><input type="checkbox" id="map6" value="NeXTerra" class="hidden"><label for="map6" class="block text-center p-2 rounded-md cursor-pointer">NeXTerra</label></div>
+                                    <div class="map-checkbox"><input type="checkbox" id="map7" value="Solara" class="hidden"><label for="map7" class="block text-center p-2 rounded-md cursor-pointer">Solara</label></div>
+                                </div>
+                            </div>
+                        </div>
                         <div id="prize-details-container" class="form-section p-4 rounded-xl space-y-2"><label class="form-label">Winning Prize Details</label><div id="prize-options-container" class="grid grid-cols-2 gap-2 text-sm"></div></div>
                         <div class="form-section p-4 rounded-xl space-y-4">
                             <div class="flex justify-between items-center">
@@ -239,9 +258,12 @@
                                     <p class="form-input bg-gray-800 text-gray-400 overflow-x-auto whitespace-nowrap no-scrollbar pr-10">যে টিম মেম্বারদের নিয়ে বুক করা হবে, তারা ছাড়া অন্য কেউ রুমে জয়েন করলে পুরো স্কোয়াডকে কিক দেওয়া হবে।</p>
                                     <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                                 </div>
-                                <!-- NEW RULE ADDED HERE -->
                                 <div class="relative">
                                     <p class="form-input bg-gray-800 text-gray-400 overflow-x-auto whitespace-nowrap no-scrollbar pr-10">ম্যাচ, টাকা বা পয়েন্ট নিয়ে কোনো সমস্যা হলে ৩ ঘণ্টার মধ্যে অ্যাডমিনের সাথে যোগাযোগ করতে হবে। এরপর কোনো অভিযোগ গ্রহণ করা হবে না।</p>
+                                    <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                                </div>
+                                <div class="relative">
+                                    <p class="form-input bg-gray-800 text-gray-400 overflow-x-auto whitespace-nowrap no-scrollbar pr-10">In-game recording must be on. If an admin requests the recording, you must be able to provide it. Failure to do so will result in a ban and the match will be rematched.</p>
                                     <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                                 </div>
                             </div>
@@ -816,7 +838,7 @@
 
             document.getElementById('add-rule-btn').addEventListener('click', () => {
                 const container = document.getElementById('rules-container');
-                const ruleCount = container.querySelectorAll('.custom-rule').length + 4; // +4 for the 3 fixed rules
+                const ruleCount = container.querySelectorAll('.custom-rule').length + 5; // +4 fixed rules
                 const ruleWrapper = document.createElement('div');
                 ruleWrapper.className = 'relative flex items-center custom-rule';
                 
@@ -837,29 +859,29 @@
                 container.appendChild(ruleWrapper);
                 newRuleInput.focus();
             });
-
+            
             document.querySelectorAll('input[name="event-type"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    const isPractice = e.target.value === 'practice';
-                    document.getElementById('entry-fee-container').style.display = isPractice ? 'none' : 'block';
-                    document.getElementById('prize-details-container').style.display = isPractice ? 'none' : 'block';
-                    if (isPractice) {
-                        document.getElementById('post-entry-fee').value = 0;
-                        document.getElementById('post-entry-fee').required = false;
-                    } else {
-                        document.getElementById('post-entry-fee').required = true;
-                    }
+                radio.addEventListener('change', () => {
+                     updateFormForMatchType();
                 });
             });
 
             const prizeContainer = document.getElementById('prize-options-container');
             const teamTypeSelect = document.getElementById('post-team-type');
+            const battleTypeSelect = document.getElementById('post-battle-type');
             
             function updatePrizesAndSlots() {
                 const teamType = teamTypeSelect.value;
+                const battleType = battleTypeSelect.value;
                 let slots, prizeRanks;
-                if (teamType === 'Solo') { slots = 48; } else if (teamType === 'Duo') { slots = 24; } else { slots = 12; }
-                prizeRanks = Array.from({ length: slots }, (_, i) => `Top ${i + 1}`);
+                if (battleType === 'Clash Squad') {
+                    slots = 2; // Always 2 teams for CS
+                    prizeRanks = ['Top 1']; // Only one winner
+                } else { // Battle Royal
+                    if (teamType === 'Solo') { slots = 48; } else if (teamType === 'Duo') { slots = 24; } else { slots = 12; }
+                    prizeRanks = Array.from({ length: slots }, (_, i) => `Top ${i + 1}`);
+                }
+                
                 document.getElementById('post-total-slots').value = slots;
                 prizeContainer.innerHTML = '';
                 prizeRanks.forEach(prize => {
@@ -867,8 +889,59 @@
                     prizeContainer.innerHTML += `<div class="prize-checkbox bg-gray-800 p-2 rounded-md"><label for="prize-${id}" class="flex items-center cursor-pointer"><input type="checkbox" id="prize-${id}" class="hidden" data-prize-name="${prize}"><div class="w-5 h-5 border-2 border-gray-500 rounded-sm mr-3 flex-shrink-0 flex items-center justify-center"><i class="fa-solid fa-check text-white hidden"></i></div><span>${prize}</span></label><div class="prize-input-container"><input type="number" placeholder="Prize Amount (TK)" class="form-input text-sm p-2 w-full"></div></div>`;
                 });
             }
+
+            function updateFormForMatchType() {
+                const battleType = battleTypeSelect.value;
+                const eventType = document.querySelector('input[name="event-type"]:checked').value;
+                const teamTypeContainer = document.getElementById('post-team-type');
+                const numMatchesContainer = document.getElementById('num-matches-container');
+                const mapSelectionContainer = document.getElementById('map-selection-container');
+                const mapCheckboxes = document.querySelectorAll('#map-checkboxes-container input');
+
+                // Reset map selections
+                mapCheckboxes.forEach(cb => { cb.checked = false; cb.disabled = false; });
+                document.getElementById('map-selection-count').textContent = '0';
+
+                if (battleType === 'Clash Squad') {
+                    // Update Fees
+                    document.getElementById('paid-fee-text').textContent = "Fee: 7 TK";
+                    document.getElementById('practice-fee-text').textContent = "Fee: 4 TK";
+                    // Update Team Types
+                    teamTypeContainer.innerHTML = `
+                        <option value="4v4">4v4</option>
+                        <option value="2v2">2v2</option>
+                        <option value="1v1">1v1</option>
+                    `;
+                    // Lock Maps and Num Matches
+                    numMatchesContainer.style.display = 'none';
+                    mapSelectionContainer.style.display = 'none';
+                } else { // Battle Royal
+                    // Reset Fees
+                    document.getElementById('paid-fee-text').textContent = "Fee: 10 TK";
+                    document.getElementById('practice-fee-text').textContent = "Fee: 5 TK";
+                    // Reset Team Types
+                    teamTypeContainer.innerHTML = `
+                        <option value="Squad">Squad</option>
+                        <option value="Duo">Duo</option>
+                        <option value="Solo">Solo</option>
+                    `;
+                    // Show Maps and Num Matches
+                    numMatchesContainer.style.display = 'block';
+                    mapSelectionContainer.style.display = 'block';
+                }
+                
+                // Update entry fee visibility based on practice/paid
+                const isPractice = eventType === 'practice';
+                document.getElementById('entry-fee-container').style.display = isPractice ? 'none' : 'block';
+                document.getElementById('prize-details-container').style.display = isPractice ? 'none' : 'block';
+                document.getElementById('post-entry-fee').required = !isPractice;
+                if (isPractice) document.getElementById('post-entry-fee').value = 0;
+
+                updatePrizesAndSlots();
+            }
+
             teamTypeSelect.addEventListener('change', updatePrizesAndSlots);
-            updatePrizesAndSlots();
+            battleTypeSelect.addEventListener('change', updateFormForMatchType);
 
             prizeContainer.addEventListener('change', e => { if (e.target.type === 'checkbox') { const prizeCheckboxDiv = e.target.closest('.prize-checkbox'); const inputContainer = prizeCheckboxDiv.querySelector('.prize-input-container'); const checkIcon = prizeCheckboxDiv.querySelector('.fa-check'); if (e.target.checked) { inputContainer.style.maxHeight = '100px'; inputContainer.style.opacity = '1'; inputContainer.style.marginTop = '0.5rem'; checkIcon.classList.remove('hidden'); } else { inputContainer.style.maxHeight = '0'; inputContainer.style.opacity = '0'; inputContainer.style.marginTop = '0'; checkIcon.classList.add('hidden'); } } });
             const numMatchesSelect = document.getElementById('post-num-matches'), mapLimitSpan = document.getElementById('map-selection-limit'), mapCountSpan = document.getElementById('map-selection-count'), mapContainer = document.getElementById('map-checkboxes-container');
@@ -883,8 +956,16 @@
                     const postImageFile = document.getElementById('post-image-upload').files[0];
                     
                     const eventType = document.querySelector('input[name="event-type"]:checked').value;
-                    const fees = { paid: 10, practice: 5 };
-                    const creationFee = !editingPostId ? (fees[eventType] || 0) : 0;
+                    const battleType = document.getElementById('post-battle-type').value;
+
+                    let creationFee = 0;
+                    if (!editingPostId) {
+                        if (battleType === 'Clash Squad') {
+                            creationFee = (eventType === 'paid') ? 7 : 4;
+                        } else { // Battle Royal
+                            creationFee = (eventType === 'paid') ? 10 : 5;
+                        }
+                    }
                     
                     let imageInfo = {
                         url: editingPostId ? (window.dbData.posts[editingPostId]?.imageUrl || null) : null,
@@ -934,15 +1015,23 @@
                     const [idh, idm] = document.getElementById('post-idpass-time').value.split(':');
                     const [sh, sm] = document.getElementById('post-matchstart-time').value.split(':');
                     const matchStartFullDate = new Date(matchDate.getFullYear(), matchDate.getMonth(), matchDate.getDate(), sh, sm).toISOString();
-                    const fixedRule1 = "বুক করা স্লট রিফান্ড হবে না।";
-                    const fixedRule2 = "যে টিম মেম্বারদের নিয়ে বুক করা হবে, তারা ছাড়া অন্য কেউ রুমে জয়েন করলে পুরো স্কোয়াডকে কিক দেওয়া হবে।";
-                    const fixedRule3 = "ম্যাচ, টাকা বা পয়েন্ট নিয়ে কোনো সমস্যা হলে ৩ ঘণ্টার মধ্যে অ্যাডমিনের সাথে যোগাযোগ করতে হবে। এরপর কোনো অভিযোগ গ্রহণ করা হবে না।";
+                    
+                    const fixedRules = Array.from(document.querySelectorAll('#rules-container p')).map(p => p.textContent.trim());
                     const customRules = Array.from(document.querySelectorAll('.rule-input')).map(input => input.value.trim()).filter(Boolean);
-                    const rules = [fixedRule1, fixedRule2, fixedRule3, ...customRules];
+                    const rules = [...fixedRules, ...customRules];
+
+                    let maps, numMatches;
+                    if (battleType === 'Clash Squad') {
+                        maps = ['Bermuda'];
+                        numMatches = 1;
+                    } else {
+                        maps = Array.from(mapContainer.querySelectorAll('input:checked')).map(cb => cb.value);
+                        numMatches = parseInt(numMatchesSelect.value);
+                    }
     
                     const postData = { 
                         author: { name: currentUserData.name, avatar: currentUserData.avatar || DEFAULT_AVATAR }, authorId: auth.currentUser.uid, imageUrl: imageInfo.url, imageSizeKB: imageInfo.size, entryFee, matchDate: matchStartFullDate,
-                        details: { eventType, eventName: document.getElementById('post-event-name').value, matchType: document.getElementById('post-battle-type').value, teamType: document.getElementById('post-team-type').value, numMatches: parseInt(numMatchesSelect.value), maps: Array.from(mapContainer.querySelectorAll('input:checked')).map(cb => cb.value), winningPrizes, rules, tags: document.getElementById('post-tags').value.split(',').map(tag => tag.trim()).filter(Boolean).slice(0, 5), idPassTime: document.getElementById('post-idpass-time').value, matchStartTime: document.getElementById('post-matchstart-time').value }
+                        details: { eventType, eventName: document.getElementById('post-event-name').value, matchType: battleType, teamType: document.getElementById('post-team-type').value, numMatches: numMatches, maps: maps, winningPrizes, rules, tags: document.getElementById('post-tags').value.split(',').map(tag => tag.trim()).filter(Boolean).slice(0, 5), idPassTime: document.getElementById('post-idpass-time').value, matchStartTime: document.getElementById('post-matchstart-time').value }
                     };
     
                     const updates = {};
@@ -994,23 +1083,9 @@
                 postImagePlaceholder.classList.remove('hidden'); 
                 const submitBtn = document.getElementById('create-post-submit-btn'); 
                 submitBtn.textContent = submitBtn.dataset.createText; 
-                mapLimitSpan.textContent = 1; 
-                mapCountSpan.textContent = 0; 
                 postImageUploadInput.required = true; 
-                document.getElementById('rules-container').innerHTML = `
-                    <div class="relative">
-                        <p class="form-input bg-gray-800 text-gray-400 overflow-x-auto whitespace-nowrap no-scrollbar pr-10">বুক করা স্লট রিফান্ড হবে না।</p>
-                        <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                    </div>
-                    <div class="relative">
-                        <p class="form-input bg-gray-800 text-gray-400 overflow-x-auto whitespace-nowrap no-scrollbar pr-10">যে টিম মেম্বারদের নিয়ে বুক করা হবে, তারা ছাড়া অন্য কেউ রুমে জয়েন করলে পুরো স্কোয়াডকে কিক দেওয়া হবে।</p>
-                        <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                    </div>
-                    <div class="relative">
-                        <p class="form-input bg-gray-800 text-gray-400 overflow-x-auto whitespace-nowrap no-scrollbar pr-10">ম্যাচ, টাকা বা পয়েন্ট নিয়ে কোনো সমস্যা হলে ৩ ঘণ্টার মধ্যে অ্যাডমিনের সাথে যোগাযোগ করতে হবে। এরপর কোনো অভিযোগ গ্রহণ করা হবে না।</p>
-                        <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                    </div>`; 
-                updatePrizesAndSlots(); 
+                document.querySelectorAll('.custom-rule').forEach(el => el.remove());
+                updateFormForMatchType(); // This will reset form fields based on the default match type
             }
            
             const navItems = document.querySelectorAll('.nav-item'), navIndicator = document.getElementById('nav-indicator'); const allHeaders = document.querySelectorAll('header'); const transitionOverlay = document.getElementById('page-transition-overlay');
@@ -1194,7 +1269,31 @@
                 if(!isAuto) showModal('success', 'Event Cancelled', 'All participants have been refunded and notified.'); 
             }
 
-            function handleMatchStart(postId) { database.ref(`/posts/${postId}/status`).set('live_match_running'); }
+            function handleMatchStart(postId) {
+                const post = window.dbData.posts[postId];
+                if(post.details.matchType === 'Clash Squad') {
+                    const participants = Object.values(post.participants || {});
+                    if (participants.length !== 2) {
+                        showModal('error', 'Cannot Start Match', 'A Clash Squad match requires exactly 2 participants to start.');
+                        return;
+                    }
+                    const team1Data = window.dbData.users[participants[0].userId].team;
+                    const team2Data = window.dbData.users[participants[1].userId].team;
+                    
+                    const csResults = {
+                        team1: { id: team1Data.id, name: team1Data.name, logo: team1Data.logo, rounds: 0 },
+                        team2: { id: team2Data.id, name: team2Data.name, logo: team2Data.logo, rounds: 0 },
+                        winner: null,
+                        resultImage: null,
+                        confirmed: false
+                    };
+                    database.ref(`/posts/${postId}/csResults`).set(csResults).then(() => {
+                        database.ref(`/posts/${postId}/status`).set('live_match_running');
+                    });
+                } else {
+                    database.ref(`/posts/${postId}/status`).set('live_match_running');
+                }
+            }
             
             async function handleMoveToLive(postId) {
                 // MODIFIED: Changed popup type to 'confirm' to show icon instead of Lottie
@@ -1302,10 +1401,16 @@
                 try {
                     document.getElementById('editing-post-id').value = postId;
                     document.querySelector(`input[name="event-type"][value="${postToEdit.details.eventType || 'paid'}"]`).click();
+                    
+                    // Set Battle Type and trigger change to update form
+                    battleTypeSelect.value = postToEdit.details.matchType || 'Battle Royal';
+                    battleTypeSelect.dispatchEvent(new Event('change'));
+
+                    // Set Team Type after battle type has updated the options
+                    teamTypeSelect.value = postToEdit.details.teamType || 'Squad';
+                    teamTypeSelect.dispatchEvent(new Event('change'));
+                    
                     document.getElementById('post-event-name').value = postToEdit.details.eventName || '';
-                    document.getElementById('post-battle-type').value = postToEdit.details.matchType || 'Battle Royal';
-                    document.getElementById('post-team-type').value = postToEdit.details.teamType || 'Squad';
-                    updatePrizesAndSlots();
                     document.getElementById('post-entry-fee').value = postToEdit.entryFee;
                     const matchDate = new Date(postToEdit.matchDate);
                     if (!isNaN(matchDate)) { document.getElementById('post-match-date').value = matchDate.toISOString().split('T')[0]; }
@@ -1314,10 +1419,11 @@
                     document.getElementById('post-num-matches').value = postToEdit.details.numMatches || 1;
                     
                     const rulesContainer = document.getElementById('rules-container');
-                    rulesContainer.innerHTML = `<div class="relative"> <p class="form-input bg-gray-800 text-gray-400 overflow-x-auto whitespace-nowrap no-scrollbar pr-10">বুক করা স্লট রিফান্ড হবে না।</p> <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i> </div><div class="relative"> <p class="form-input bg-gray-800 text-gray-400 overflow-x-auto whitespace-nowrap no-scrollbar pr-10">যে টিম মেম্বারদের নিয়ে বুক করা হবে, তারা ছাড়া অন্য কেউ রুমে জয়েন করলে পুরো স্কোয়াডকে কিক দেওয়া হবে।</p> <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i> </div><div class="relative"> <p class="form-input bg-gray-800 text-gray-400 overflow-x-auto whitespace-nowrap no-scrollbar pr-10">ম্যাচ, টাকা বা পয়েন্ট নিয়ে কোনো সমস্যা হলে ৩ ঘণ্টার মধ্যে অ্যাডমিনের সাথে যোগাযোগ করতে হবে। এরপর কোনো অভিযোগ গ্রহণ করা হবে না।</p> <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i> </div>`;
-                    const customRules = (postToEdit.details.rules || []).slice(3);
+                    const fixedRulesCount = rulesContainer.querySelectorAll('p.form-input').length;
+                    
+                    const customRules = (postToEdit.details.rules || []).slice(fixedRulesCount);
                     customRules.forEach((rule, index) => {
-                        const ruleCount = index + 4;
+                        const ruleCount = index + fixedRulesCount + 1;
                         const ruleWrapper = document.createElement('div');
                         ruleWrapper.className = 'relative flex items-center custom-rule';
                         const newRuleInput = document.createElement('input');
@@ -1331,10 +1437,13 @@
                     postImagePreview.src = postToEdit.imageUrl;
                     postImagePreview.classList.remove('hidden'); postImagePlaceholder.classList.add('hidden');
                     postImageUploadInput.required = false;
-                    mapLimitSpan.textContent = postToEdit.details.numMatches || 1;
-                    const postMaps = postToEdit.details.maps || [];
-                    mapContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = postMaps.includes(cb.value); });
-                    mapCountSpan.textContent = mapContainer.querySelectorAll('input:checked').length;
+
+                    if (postToEdit.details.matchType !== 'Clash Squad') {
+                        mapLimitSpan.textContent = postToEdit.details.numMatches || 1;
+                        const postMaps = postToEdit.details.maps || [];
+                        mapContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = postMaps.includes(cb.value); });
+                        mapCountSpan.textContent = mapContainer.querySelectorAll('input:checked').length;
+                    }
 
                     if(postToEdit.details.eventType !== 'practice') {
                         (postToEdit.details.winningPrizes || []).forEach(prizeData => {
@@ -1474,8 +1583,46 @@
                 }
             }
             
-            function renderSponsorLiveView(postId, activeTabTarget = 'sponsor-manage-content') { const post = window.dbData.posts[postId]; if (!post) return; const content = document.getElementById('sponsor-live-view-content'); screens.sponsorLive.dataset.postId = postId; let bottomButtons = ''; if (post.status !== 'completed' && post.status !== 'cancelled') { bottomButtons = `<div class="fixed bottom-0 left-0 w-full p-4 bg-[#1e1e1e] border-t border-gray-700 z-20"><button id="send-prizes-btn" class="w-full py-3 action-button rounded-lg text-lg">Send Prizes & Finalize</button></div>`; } content.innerHTML = `<div class="sticky top-0 bg-[#121212]/80 backdrop-blur-md py-4 px-4 flex justify-between items-center z-10"><h2 class="text-2xl font-bold">${post.details.eventName}</h2><button id="close-sponsor-view-btn" class="text-gray-400 text-3xl">&times;</button></div><div class="flex gap-2 mb-4 px-4"><button class="tab-button sponsor-view-tab" data-target="sponsor-manage-content">Manage</button><button class="tab-button sponsor-view-tab" data-target="sponsor-teams-content">Submissions</button><button class="tab-button sponsor-view-tab" data-target="sponsor-participants-content">Participants</button><button class="tab-button sponsor-view-tab" data-target="sponsor-leaderboard-content">Leaderboard</button></div><div class="px-4 pb-24 overflow-y-auto h-[calc(100%-120px)] no-scrollbar"><div id="sponsor-manage-content" class="tab-content-section"></div><div id="sponsor-teams-content" class="tab-content-section"></div><div id="sponsor-participants-content" class="tab-content-section"></div><div id="sponsor-leaderboard-content" class="tab-content-section"></div></div>${bottomButtons}`; renderSponsorManageTab(postId); renderSponsorTeamsTab(postId); renderSponsorParticipantsTab(postId); renderSponsorLeaderboard(postId, 'sponsor-leaderboard-content', true); screens.sponsorLive.classList.remove('hidden'); content.querySelector('#close-sponsor-view-btn').addEventListener('click', () => { screens.sponsorLive.classList.add('hidden'); delete screens.sponsorLive.dataset.postId; }); setupTabs('sponsor-live-view-content', '.sponsor-view-tab', '.tab-content-section'); if(activeTabTarget) { const desiredTab = content.querySelector(`.sponsor-view-tab[data-target="${activeTabTarget}"]`); if (desiredTab && !desiredTab.classList.contains('active-tab')) { content.querySelectorAll('.sponsor-view-tab').forEach(t => t.classList.remove('active-tab')); content.querySelectorAll('.tab-content-section').forEach(s => s.classList.remove('active-section')); desiredTab.classList.add('active-tab'); document.getElementById(activeTabTarget)?.classList.add('active-section'); } } if(post.status !== 'completed' && post.status !== 'cancelled') { const sendPrizesBtn = content.querySelector('#send-prizes-btn'); if(sendPrizesBtn) { sendPrizesBtn.addEventListener('click', () => handleSendPrizes(postId)); checkFinalizeButtonState(postId); } } }
-            function renderSponsorLeaderboard(postId, containerId = 'sponsor-leaderboard-content', allowEdit = true) { const post = window.dbData.posts[postId]; const container = document.getElementById(containerId); if (!container) return; const resultsSource = post['approvedResults'] || {}; const leaderboardData = Object.values(post.participants || {}).map(p => { const user = window.dbData.users[p.userId]; if (!user) return null; const team = user.team; const name = post.details.teamType.toLowerCase() === 'solo' ? p.players[0].name : (team ? team.name : 'Unknown Team'); const logo = post.details.teamType.toLowerCase() === 'solo' ? user.avatar : (team?.logo || DEFAULT_AVATAR); let totalPoints = 0, totalKills = 0, totalPP = 0, isEdited = false; if (resultsSource[p.userId]) { Object.values(resultsSource[p.userId]).forEach(mapResult => { if(mapResult.edited) isEdited = true; totalPoints += calculatePoints(mapResult.kills, mapResult.position); totalKills += parseInt(mapResult.kills) || 0; totalPP += calculatePoints(0, mapResult.position); }); } return { name, logo, userId: p.userId, totalPoints, totalKills, totalPP, isEdited }; }).filter(Boolean).sort((a, b) => b.totalPoints - a.totalPoints); const getRankClass = (index) => { if (index === 0) return 'bg-yellow-500/20 border-yellow-400'; if (index === 1) return 'bg-gray-400/20 border-gray-300'; if (index === 2) return 'bg-yellow-800/20 border-yellow-700'; return 'bg-[#1e1e1e] border-gray-800'; }; const leaderboardHTML = leaderboardData.map((team, index) => { const teamData = window.dbData.users[team.userId]?.team; let membersHTML = '<p class="text-xs text-gray-500">Team data not available.</p>'; if (teamData && teamData.members) { membersHTML = teamData.members.map((member, idx) => `<li class="flex justify-between text-xs py-1 px-2 rounded ${idx === 0 ? 'bg-yellow-500/20' : ''}"><span>${idx === 0 ? '👑' : ''} ${member.name}</span><span class="text-gray-400">${member.uid}</span></li>`).join(''); } const editButtonHTML = allowEdit ? `<div class="col-span-1 text-center"><button class="edit-points-btn text-blue-400 hover:text-blue-300" data-post-id="${postId}" data-user-id="${team.userId}"><i class="fa-solid fa-pencil"></i></button></div>` : '<div class="col-span-1"></div>'; return `<div class="leaderboard-item-wrapper rounded-lg border ${getRankClass(index)}"><div class="leaderboard-row grid grid-cols-12 items-center p-2 text-sm cursor-pointer" data-user-id="${team.userId}"><span class="font-bold col-span-1 text-center text-lg">#${index + 1}</span><img src="${team.logo}" class="w-8 h-8 rounded-full col-span-1 object-cover"><p class="font-semibold col-span-3 ml-2 truncate">${team.name}</p><p class="text-center col-span-2">${team.totalKills}</p><p class="text-center col-span-2">${team.totalPP}</p><p class="font-bold text-green-400 text-center col-span-2">${team.totalPoints}</p>${editButtonHTML}</div><div class="team-members-details hidden p-3 bg-gray-900/50 border-t border-gray-700"><h5 class="font-bold text-sm mb-2 text-green-300">Team Roster</h5><ul class="space-y-1">${membersHTML}</ul></div></div>` }).join(''); const headerEditCol = allowEdit ? '<span class="text-center col-span-1">EDIT</span>' : '<span class="col-span-1"></span>'; container.innerHTML = `<h3 class="text-xl font-bold mb-3">Leaderboard</h3><div class="grid grid-cols-12 text-xs text-gray-400 font-bold p-2"><span class="col-span-1 text-center">POS</span><span class="col-span-4 ml-2">TEAM</span><span class="text-center col-span-2">KP</span><span class="text-center col-span-2">PP</span><span class="text-center col-span-2">TOTAL</span>${headerEditCol}</div><div class="space-y-2">${leaderboardHTML || '<p class="text-center text-gray-500 p-4">No approved results yet.</p>'}</div>`; if (allowEdit) { container.removeEventListener('click', handleLeaderboardClick); container.addEventListener('click', handleLeaderboardClick); } }
+            function renderSponsorLiveView(postId, activeTabTarget = 'sponsor-manage-content') {
+                const post = window.dbData.posts[postId]; if (!post) return; 
+                const content = document.getElementById('sponsor-live-view-content'); 
+                screens.sponsorLive.dataset.postId = postId;
+
+                if(post.details.matchType === 'Clash Squad') {
+                    renderCSLiveManagement(postId);
+                    return;
+                }
+                
+                let bottomButtons = ''; 
+                if (post.status !== 'completed' && post.status !== 'cancelled') { 
+                    bottomButtons = `<div class="fixed bottom-0 left-0 w-full p-4 bg-[#1e1e1e] border-t border-gray-700 z-20"><button id="send-prizes-btn" class="w-full py-3 action-button rounded-lg text-lg">Send Prizes & Finalize</button></div>`; 
+                } 
+                content.innerHTML = `<div class="sticky top-0 bg-[#121212]/80 backdrop-blur-md py-4 px-4 flex justify-between items-center z-10"><h2 class="text-2xl font-bold">${post.details.eventName}</h2><button id="close-sponsor-view-btn" class="text-gray-400 text-3xl">&times;</button></div><div class="flex gap-2 mb-4 px-4"><button class="tab-button sponsor-view-tab" data-target="sponsor-manage-content">Manage</button><button class="tab-button sponsor-view-tab" data-target="sponsor-teams-content">Submissions</button><button class="tab-button sponsor-view-tab" data-target="sponsor-participants-content">Participants</button><button class="tab-button sponsor-view-tab" data-target="sponsor-leaderboard-content">Leaderboard</button></div><div class="px-4 pb-24 overflow-y-auto h-[calc(100%-120px)] no-scrollbar"><div id="sponsor-manage-content" class="tab-content-section"></div><div id="sponsor-teams-content" class="tab-content-section"></div><div id="sponsor-participants-content" class="tab-content-section"></div><div id="sponsor-leaderboard-content" class="tab-content-section"></div></div>${bottomButtons}`; 
+                renderSponsorManageTab(postId); 
+                renderSponsorTeamsTab(postId); 
+                renderSponsorParticipantsTab(postId); 
+                renderSponsorLeaderboard(postId, 'sponsor-leaderboard-content', true); 
+                screens.sponsorLive.classList.remove('hidden'); 
+                content.querySelector('#close-sponsor-view-btn').addEventListener('click', () => { screens.sponsorLive.classList.add('hidden'); delete screens.sponsorLive.dataset.postId; }); 
+                setupTabs('sponsor-live-view-content', '.sponsor-view-tab', '.tab-content-section'); 
+                if(activeTabTarget) { 
+                    const desiredTab = content.querySelector(`.sponsor-view-tab[data-target="${activeTabTarget}"]`); 
+                    if (desiredTab && !desiredTab.classList.contains('active-tab')) { 
+                        content.querySelectorAll('.sponsor-view-tab').forEach(t => t.classList.remove('active-tab')); 
+                        content.querySelectorAll('.tab-content-section').forEach(s => s.classList.remove('active-section')); 
+                        desiredTab.classList.add('active-tab'); 
+                        document.getElementById(activeTabTarget)?.classList.add('active-section'); 
+                    } 
+                } 
+                if(post.status !== 'completed' && post.status !== 'cancelled') { 
+                    const sendPrizesBtn = content.querySelector('#send-prizes-btn'); 
+                    if(sendPrizesBtn) { 
+                        sendPrizesBtn.addEventListener('click', () => handleSendPrizes(postId)); 
+                        checkFinalizeButtonState(postId); 
+                    } 
+                } 
+            }
+            function renderSponsorLeaderboard(postId, containerId = 'sponsor-leaderboard-content', allowEdit = true) { const post = window.dbData.posts[postId]; const container = document.getElementById(containerId); if (!container) return; const resultsSource = post['approvedResults'] || {}; const isSolo = post.details.teamType.toLowerCase() === 'solo'; const leaderboardData = Object.values(post.participants || {}).map(p => { const user = window.dbData.users[p.userId]; if (!user) return null; const team = user.team; const name = isSolo ? p.players[0].name : (team ? team.name : 'Unknown Team'); const logo = isSolo ? user.avatar : (team?.logo || DEFAULT_AVATAR); let totalPoints = 0, totalKills = 0, totalPP = 0, isEdited = false; if (resultsSource[p.userId]) { Object.values(resultsSource[p.userId]).forEach(mapResult => { if(mapResult.edited) isEdited = true; totalPoints += calculatePoints(mapResult.kills, mapResult.position); totalKills += parseInt(mapResult.kills) || 0; totalPP += calculatePoints(0, mapResult.position); }); } return { name, logo, userId: p.userId, totalPoints, totalKills, totalPP, isEdited }; }).filter(Boolean).sort((a, b) => b.totalPoints - a.totalPoints); const getRankClass = (index) => { if (index === 0) return 'bg-yellow-500/20 border-yellow-400'; if (index === 1) return 'bg-gray-400/20 border-gray-300'; if (index === 2) return 'bg-yellow-800/20 border-yellow-700'; return 'bg-[#1e1e1e] border-gray-800'; }; const leaderboardHTML = leaderboardData.map((team, index) => { const teamData = window.dbData.users[team.userId]?.team; let membersHTML = '<p class="text-xs text-gray-500">Team data not available.</p>'; if (teamData && teamData.members) { membersHTML = teamData.members.map((member, idx) => `<li class="flex justify-between text-xs py-1 px-2 rounded ${idx === 0 ? 'bg-yellow-500/20' : ''}"><span>${idx === 0 ? '👑' : ''} ${member.name}</span><span class="text-gray-400">${member.uid}</span></li>`).join(''); } const editButtonHTML = allowEdit ? `<div class="col-span-1 text-center"><button class="edit-points-btn text-blue-400 hover:text-blue-300" data-post-id="${postId}" data-user-id="${team.userId}"><i class="fa-solid fa-pencil"></i></button></div>` : '<div class="col-span-1"></div>'; return `<div class="leaderboard-item-wrapper rounded-lg border ${getRankClass(index)}"><div class="leaderboard-row grid grid-cols-12 items-center p-2 text-sm cursor-pointer" data-user-id="${team.userId}"><span class="font-bold col-span-1 text-center text-lg">#${index + 1}</span><img src="${team.logo}" class="w-8 h-8 rounded-full col-span-1 object-cover"><p class="font-semibold col-span-3 ml-2 truncate">${team.name}</p><p class="text-center col-span-2">${team.totalKills}</p><p class="text-center col-span-2">${team.totalPP}</p><p class="font-bold text-green-400 text-center col-span-2">${team.totalPoints}</p>${editButtonHTML}</div><div class="team-members-details hidden p-3 bg-gray-900/50 border-t border-gray-700"><h5 class="font-bold text-sm mb-2 text-green-300">Team Roster</h5><ul class="space-y-1">${membersHTML}</ul></div></div>` }).join(''); const headerEditCol = allowEdit ? '<span class="text-center col-span-1">EDIT</span>' : '<span class="col-span-1"></span>'; container.innerHTML = `<h3 class="text-xl font-bold mb-3">Leaderboard</h3><div class="grid grid-cols-12 text-xs text-gray-400 font-bold p-2"><span class="col-span-1 text-center">POS</span><span class="col-span-4 ml-2">TEAM</span><span class="text-center col-span-2">KP</span><span class="text-center col-span-2">PP</span><span class="text-center col-span-2">TOTAL</span>${headerEditCol}</div><div class="space-y-2">${leaderboardHTML || '<p class="text-center text-gray-500 p-4">No approved results yet.</p>'}</div>`; if (allowEdit) { container.removeEventListener('click', handleLeaderboardClick); container.addEventListener('click', handleLeaderboardClick); } }
             function handleEditPoints(postId, userId) { const post = window.dbData.posts[postId]; const teamResults = post.approvedResults?.[userId]; const teamName = window.dbData.users[userId]?.team?.name || 'Team'; if(!teamResults) { showModal('error', 'No results', 'This team has no approved results to edit.'); return; } const modalBox = document.getElementById('edit-points-modal-box'); let formHTML = `<form id="edit-points-form" class="space-y-4"><h3 class="text-xl font-bold mb-2">Edit Points for ${teamName}</h3>`; post.details.maps.forEach(map => { formHTML += `<div class="p-2 bg-gray-900/50 rounded-lg"><p class="font-semibold text-green-400">${map}</p><div class="grid grid-cols-2 gap-2 mt-1"><input type="number" class="form-input text-sm" placeholder="Kills" name="${map}-kills" value="${teamResults[map]?.kills || 0}"><input type="number" class="form-input text-sm" placeholder="Position" name="${map}-position" value="${teamResults[map]?.position || 0}"></div></div>`; }); formHTML += `<div><label class="form-label">Reason for Edit</label><textarea name="edit-reason" class="form-textarea" rows="3" placeholder="Explain why you are changing the points..." required></textarea></div>`; formHTML += `<div><label class="form-label">Evidence Screenshot (Optional)</label><input type="file" name="edit-screenshot" accept="image/*" class="text-sm file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200"></div>`; formHTML += `<div class="flex gap-2 mt-4"><button type="button" id="close-edit-modal-btn" class="flex-1 py-2 bg-gray-600 rounded-lg">Cancel</button><button type="submit" class="flex-1 py-2 action-button rounded-lg">Save & Notify</button></div></form>`; modalBox.innerHTML = formHTML; screens.editPoints.classList.remove('hidden'); modalBox.querySelector('#close-edit-modal-btn').addEventListener('click', ()=>screens.editPoints.classList.add('hidden')); modalBox.querySelector('#edit-points-form').addEventListener('submit', async (e) => { e.preventDefault(); handleFormSubmit(e.target, 'Saving...', async () => { const uploadResult = await uploadImage(e.target.elements['edit-screenshot'].files[0], 'ban-evidence'); const screenshotDataUrl = uploadResult ? uploadResult.url : null; if (uploadResult) updateTotalStorage(uploadResult.size); const reason = e.target.elements['edit-reason'].value; const mailId = Date.now(); const updates = {}; updates[`/users/${userId}/mailbox/${mailId}`] = { id: mailId, postId: parseInt(postId), type: 'edit', subject: 'Points Updated by Sponsor', body: { reason, screenshot: screenshotDataUrl }, timestamp: new Date().toISOString(), read: false }; updates[`/users/${auth.currentUser.uid}/mailbox/${mailId}`] = { ...updates[`/users/${userId}/mailbox/${mailId}`], subject: `Points updated for ${teamName}` }; post.details.maps.forEach(map => { updates[`/posts/${postId}/approvedResults/${userId}/${map}`] = { kills: e.target.elements[`${map}-kills`].value, position: e.target.elements[`${map}-position`].value, edited: true }; }); await database.ref().update(updates); screens.editPoints.classList.add('hidden'); showModal('success', 'Points Updated', `The user has been notified.`); }); }); }
             function renderSponsorTeamsTab(postId) { const post = window.dbData.posts[postId]; const container = document.getElementById('sponsor-teams-content'); if(!container) return; const teamsHTML = Object.values(post.participants || {}).map(p => { const team = window.dbData.users[p.userId]?.team; if(!team) return ''; return `<button class="p-3 bg-gray-800 rounded-lg team-container text-left w-full" data-user-id="${p.userId}"><p class="font-semibold">${team.name}</p></button>`}).join(''); container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="md:col-span-1 flex flex-col gap-2">${teamsHTML || '<p class="text-gray-500">No teams.</p>'}</div><div id="sponsor-team-details" class="md:col-span-2 bg-black/20 p-4 rounded-lg"><p class="text-gray-500 text-center mt-8">Select a team to view submissions.</p></div></div>`; container.querySelectorAll('.team-container').forEach(el => { el.addEventListener('click', () => { container.querySelectorAll('.team-container').forEach(btn => btn.classList.replace('bg-green-600', 'bg-gray-800')); el.classList.replace('bg-gray-800','bg-green-600'); renderSponsorTeamDetails(postId, el.dataset.userId); }); }); }
             function renderSponsorTeamDetails(postId, userId) { const post = window.dbData.posts[postId]; const team = window.dbData.users[userId]?.team; if(!post || !team) return; const container = document.getElementById('sponsor-team-details'); const userSubmissions = post.results?.[userId] || {}; const approvedSubmissions = post.approvedResults?.[userId] || {}; const detailsHTML = post.details.maps.map(map => { const submission = userSubmissions[map]; const isApproved = !!approvedSubmissions[map]; let buttonsHTML = ''; if (isApproved) { buttonsHTML = `<button class="w-full mt-3 py-2 rounded text-xs font-bold bg-green-700 cursor-not-allowed" disabled>Approved</button>`; } else if (submission) { buttonsHTML = `<div class="flex gap-2 mt-3"><button class="flex-1 py-2 rounded text-xs font-bold bg-red-600 hover:bg-red-700 reject-result-btn" data-map-name="${map}">Reject</button><button class="flex-1 py-2 rounded text-xs font-bold bg-blue-600 hover:bg-blue-700 approve-result-btn" data-map-name="${map}">Approve</button></div>`; } else { buttonsHTML = `<button class="w-full mt-3 py-2 rounded text-xs font-bold bg-gray-600 hover:bg-gray-700 mark-dnp-btn" data-map-name="${map}">Mark as DNP (0 Pts)</button>`; } if (!submission) { return `<div class="p-4 bg-[#28282B] rounded-lg text-sm"><p class="font-bold text-lg">${map}</p><p class="text-gray-400 mt-2">No submission yet.</p>${buttonsHTML}</div>`; } return `<div class="p-4 bg-[#28282B] rounded-lg text-sm space-y-2"><p class="font-bold text-lg">${map}</p><p>Kills: <span class="font-semibold">${submission.kills}</span> | Position: <span class="font-semibold">#${submission.position}</span></p>${submission.screenshot ? `<div><img src="${submission.screenshot}" class="w-full h-auto object-cover rounded-md cursor-pointer mt-2" onclick="event.stopPropagation(); showLightbox('${submission.screenshot}')"></div>` : '<p class="text-xs text-gray-500 mt-2">No screenshot</p>'}${buttonsHTML}</div>`; }).join(''); container.innerHTML = `<h4 class="font-bold text-xl mb-3">${team.name}'s Submissions</h4><div class="space-y-3">${detailsHTML}</div>`; container.querySelectorAll('.approve-result-btn').forEach(btn => btn.addEventListener('click', () => handleApproveResult(postId, userId, btn.dataset.mapName))); container.querySelectorAll('.mark-dnp-btn').forEach(btn => btn.addEventListener('click', () => handleMarkAsDNP(postId, userId, btn.dataset.mapName))); container.querySelectorAll('.reject-result-btn').forEach(btn => btn.addEventListener('click', () => handleRejectResult(postId, userId, btn.dataset.mapName))); }
@@ -1489,7 +1636,82 @@
                 renderSponsorTeamDetails(postId, userId);
             }
             
+            async function handleCSSendPrizes(postId) {
+                const post = window.dbData.posts[postId];
+                if (!post || !post.csResults) {
+                    showModal('error', 'Result Error', 'Clash Squad results not found.');
+                    return;
+                }
+                const { winner } = post.csResults;
+                if (!winner) {
+                    showModal('error', 'Winner Not Determined', 'A winner could not be determined from the scores.');
+                    return;
+                }
+
+                // Find the winning user's UID
+                let winnerUserId = null;
+                for (const p of Object.values(post.participants || {})) {
+                    const userTeam = window.dbData.users[p.userId]?.team;
+                    if (userTeam && userTeam.id === winner) {
+                        winnerUserId = p.userId;
+                        break;
+                    }
+                }
+                if (!winnerUserId) {
+                    showModal('error', 'Winner Not Found', 'Could not find the winning user in the participant list.');
+                    return;
+                }
+
+                showCustomModal({
+                    type: 'success',
+                    title: 'Confirm Finalization',
+                    message: 'This will distribute the prize to the winning team and mark the match as complete. This action cannot be undone.',
+                    primaryButton: {
+                        text: 'Send Prize & Finalize',
+                        onClick: async () => {
+                            showLoader('Finalizing Match...');
+                            const updates = {};
+                            let totalPrizesPaid = 0;
+                            const prizeInfo = (post.details.winningPrizes || []).find(p => p.rank === 'Top 1');
+                            
+                            if (prizeInfo && prizeInfo.prize > 0) {
+                                updates[`/users/${winnerUserId}/wallet/live`] = firebase.database.ServerValue.increment(prizeInfo.prize);
+                                totalPrizesPaid = prizeInfo.prize;
+                            }
+
+                            const totalIncome = (post.slots.booked || 0) * post.entryFee;
+                            const profit = totalIncome - totalPrizesPaid;
+                            
+                            updates[`/posts/${postId}/status`] = 'completed';
+                            updates[`/posts/${postId}/completedAt`] = new Date().toISOString();
+                            updates[`/posts/${postId}/profit`] = profit;
+                            
+                            try {
+                                await database.ref().update(updates);
+                                hideLoader();
+                                showModal('success', 'Prizes Sent!', 'The prize has been sent and the match is complete.', 'OK', () => {
+                                    screens.sponsorLive.classList.add('hidden');
+                                    navigateToPage('manage-posts-content');
+                                });
+                            } catch (err) {
+                                hideLoader();
+                                handleFirebaseError(err);
+                            }
+                        }
+                    },
+                    secondaryButton: { text: 'Cancel' }
+                });
+            }
+
+
             function handleSendPrizes(postId) {
+                const post = window.dbData.posts[postId];
+                if (post.details.matchType === 'Clash Squad') {
+                    handleCSSendPrizes(postId);
+                    return;
+                }
+
+                // Existing Battle Royal Logic
                 showCustomModal({
                     type: 'success',
                     title: 'Confirm Finalization',
@@ -1497,7 +1719,6 @@
                     primaryButton: {
                         text: 'Yes, Finalize',
                         onClick: () => {
-                            const post = window.dbData.posts[postId];
                             if (!post) return;
             
                             if (post.details.eventType === 'practice') {
@@ -2039,7 +2260,7 @@
                 contentArea.scrollTop = 0;
                 backFromPaymentBtn.onclick = () => { screens.payment.classList.add('hidden'); };
                 contentArea.innerHTML = `<h2 class="text-xl font-bold text-center mb-6">Select a Payment Method</h2><div class="space-y-4 max-w-sm mx-auto">${Object.keys(paymentMethods).map(key => `<button class="w-full flex items-center p-4 rounded-xl payment-method-btn" data-method-key="${key}" data-type="${type}"><img src="${paymentMethods[key].logo}" class="payment-method-img"><span class="text-lg font-semibold">${paymentMethods[key].name}</span><i class="fa-solid fa-chevron-right text-gray-500 ml-auto"></i></button>`).join('')}</div>`;
-                contentArea.querySelectorAll('.payment-method-btn').forEach(btn => btn.addEventListener('click', () => { if (type === 'deposit') renderDepositForm(btn.dataset.methodKey); else if (type === 'withdraw') renderWithdrawForm(btn.dataset.methodKey); }));
+                contentArea.querySelectorAll('.payment-method-btn').forEach(btn => { btn.addEventListener('click', () => { if (type === 'deposit') renderDepositForm(btn.dataset.methodKey); else if (type === 'withdraw') renderWithdrawForm(btn.dataset.methodKey); }); });
             }
 
             // MODIFIED: Added animation class to logo and improved UI
