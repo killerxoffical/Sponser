@@ -33,7 +33,7 @@
         #splash-screen-logo.fade-in { opacity: 1; transform: scale(1); }
         .nav-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 500px; z-index: 50; }
         .nav-bar { position: relative; display: flex; justify-content: space-around; align-items: center; background-color: #212124; padding: 8px; border-radius: 9999px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
-        .nav-item { display: flex; align-items: center; justify-content: center; padding: 12px 16px; cursor: pointer; color: #a1a1aa; position: relative; z-index: 10; transition: color 0.3s ease-out; border-radius: 9999px; }
+        .nav-item { display: flex; align-items: center; justify-content: center; padding: 12px 16px; cursor: pointer; color: #a1a1aa; position: relative; z-index: 10; transition: color 0.3s ease-out; border-radius: 9999px; flex: 1; }
         .nav-item .nav-icon { font-size: 20px; transition: color 0.3s ease-out; }
         .nav-item .nav-label { font-weight: 600; font-size: 14px; white-space: nowrap; margin-left: 0; max-width: 0; opacity: 0; overflow: hidden; transition: max-width 0.3s ease-out, opacity 0.2s 0.1s ease-out, margin-left 0.3s ease-out; }
         .nav-item.active { color: #212124; }
@@ -56,7 +56,7 @@
         .icon-tick { color: #22c55e; } .icon-cross { color: #ef4444; }
         #page-transition-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease-in-out; backdrop-filter: blur(5px); }
         #page-transition-overlay.active { opacity: 1; pointer-events: auto; }
-        .mail-item { position: relative; } /* MODIFIED: Added for delete button positioning */
+        .mail-item { position: relative; }
         .mail-item.unread { background-color: #2a2a2a; border-left-color: #1DB954; }
         .notification-badge { position: absolute; top: -5px; right: -5px; background-color: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -74,7 +74,7 @@
         .event-type-card { background-color: #2a2a2a; border: 2px solid #333; transition: all 0.2s ease-in-out; }
         input[name="event-type"]:checked + .event-type-card { border-color: #1DB954; background-color: #1e1e1e; transform: scale(1.05); }
         .event-type-card.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-        .statement-card { background: #1e1e1e; border-left: 4px solid; } /* MODIFIED: Removed specific color */
+        .statement-card { background: #1e1e1e; border-left: 4px solid; }
         .premium-header { background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 24px 24px; }
         .header-back-btn { background-color: rgba(255, 255, 255, 0.1); }
         #profile-content { background: radial-gradient(circle, #1e1e1e 0%, #121212 100%); }
@@ -98,14 +98,28 @@
         .tx-status-pending { background-color: #eab308; color: black; }
         .tx-status-approved { background-color: #22c55e; color: white; }
         .tx-status-rejected { background-color: #ef4444; color: white; }
-        /* NEW: Deposit page logo animation */
         .deposit-logo-animated {
-            border-radius: 1.5rem; /* More rounded */
+            border-radius: 1.5rem;
             animation: float-effect 3s ease-in-out infinite;
         }
         @keyframes float-effect {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); }
+        }
+        .leaderboard-item-wrapper .edit-points-btn {
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .leaderboard-item-wrapper:hover .edit-points-btn {
+            opacity: 1;
+        }
+        #edit-points-modal-box .form-input {
+            text-align: center;
+            font-weight: bold;
+        }
+        #edit-points-modal-box .form-label {
+            font-size: 0.9rem;
+            color: #a1a1aa;
         }
     </style>
 </head>
@@ -163,7 +177,7 @@
             </header>
             <header id="statement-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
                 <button class="back-to-profile-from-subpage header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Events & Earnings</h2>
+                <h2 class="text-xl font-bold">Statement</h2>
                 <div class="w-10"></div>
             </header>
              <header id="feedback-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
@@ -179,6 +193,7 @@
 
             <!-- Page Content Area -->
             <div class="w-full">
+                <!-- Add/Edit Post Content -->
                 <div id="add-post-content" class="dashboard-page hidden p-4 md:p-6">
                     <form id="create-post-form" class="space-y-6">
                         <input type="hidden" id="editing-post-id" value="">
@@ -295,11 +310,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- MODIFIED: Added Events & Earnings button -->
                     <div class="mt-8 max-w-2xl mx-auto space-y-3">
                          <button id="deposit-btn" class="w-full py-3 rounded-lg manage-btn text-white font-bold transition-colors"><i class="fa-solid fa-plus-circle mr-2"></i> Deposit Money</button>
                          <button id="withdraw-btn" class="w-full py-3 rounded-lg manage-btn text-white font-bold transition-colors"><i class="fa-solid fa-arrow-circle-down mr-2"></i> Withdraw Money</button>
-                         <button id="go-to-statement-btn" class="w-full py-3 rounded-lg manage-btn bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-bold transition-colors"><i class="fa-solid fa-chart-line mr-2"></i> Events & Earnings</button>
+                         <button id="go-to-statement-btn" class="w-full py-3 rounded-lg manage-btn bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-bold transition-colors"><i class="fa-solid fa-chart-line mr-2"></i> View Statement</button>
                     </div>
                 </div>
 
@@ -343,7 +357,7 @@
                             <div class="space-y-3">
                                 <button id="kyc-button" class="setting-item"><div class="flex items-center"><div class="setting-icon bg-icon-green"><i class="fa-solid fa-user-check"></i></div><span class="setting-label">Organizer Verification</span></div><i class="fa-solid fa-chevron-right text-gray-500"></i></button>
                                 <button id="account-settings-button" class="setting-item"><div class="flex items-center"><div class="setting-icon bg-icon-blue"><i class="fa-solid fa-user-cog"></i></div><span class="setting-label">Account Settings</span></div><i class="fa-solid fa-chevron-right text-gray-500"></i></button>
-                                <button id="statement-button" class="setting-item"><div class="flex items-center"><div class="setting-icon bg-icon-purple"><i class="fa-solid fa-chart-line"></i></div><span class="setting-label">Events & Earnings</span></div><i class="fa-solid fa-chevron-right text-gray-500"></i></button>
+                                <button id="statement-button" class="setting-item"><div class="flex items-center"><div class="setting-icon bg-icon-purple"><i class="fa-solid fa-chart-line"></i></div><span class="setting-label">Statement</span></div><i class="fa-solid fa-chevron-right text-gray-500"></i></button>
                                 <button id="feedback-button" class="setting-item"><div class="flex items-center"><div class="setting-icon bg-icon-yellow"><i class="fa-solid fa-comment-dots"></i></div><span class="setting-label">Feedbacks</span></div><i class="fa-solid fa-chevron-right text-gray-500"></i></button>
                                 <button id="history-button" class="setting-item"><div class="flex items-center"><div class="setting-icon bg-icon-orange"><i class="fa-solid fa-history"></i></div><span class="setting-label">Event History</span></div><i class="fa-solid fa-chevron-right text-gray-500"></i></button>
                                 <button id="logout-button-mobile" class="setting-item"><div class="flex items-center"><div class="setting-icon bg-icon-red"><i class="fa-solid fa-arrow-right-from-bracket"></i></div><span class="setting-label">Logout</span></div><i class="fa-solid fa-chevron-right text-gray-500"></i></button>
@@ -398,6 +412,7 @@
                 <div id="nav-indicator"></div>
                 <a href="#" id="nav-manage-posts" class="nav-item active"><i class="fa-solid fa-tasks nav-icon"></i><span class="nav-label">Manage</span></a>
                 <a href="#" id="nav-wallet" class="nav-item"><i class="fa-solid fa-wallet nav-icon"></i><span class="nav-label">Wallet</span></a>
+                <a href="#" id="nav-statement" class="nav-item"><i class="fa-solid fa-chart-line nav-icon"></i><span class="nav-label">Statement</span></a>
                 <a href="#" id="nav-mailbox" class="nav-item relative"><i class="fa-solid fa-envelope nav-icon"></i><span class="nav-label">Mailbox</span></a>
                 <a href="#" id="nav-profile" class="nav-item"><i class="fa-solid fa-user nav-icon"></i><span class="nav-label">Profile</span></a>
             </nav>
@@ -457,8 +472,6 @@
             appId: "1:910859278641:web:d896205c530816fb297810" 
         };
         
-        // **UPDATED**: Initialize Firebase with a unique name for the sponsor app
-        // This prevents session conflicts with the user app if they are on the same domain.
         if (!firebase.apps.find(app => app.name === 'sponsorApp')) {
             firebase.initializeApp(firebaseConfig, 'sponsorApp');
         }
@@ -476,13 +489,12 @@
             const modalScreen = document.getElementById('modal-screen');
             if (!modalScreen) return;
 
-            // MODIFIED: Added 'confirm' type which uses a static icon instead of Lottie
             const iconHTMLs = {
                 success: '<dotlottie-wc src="https://lottie.host/eda3572d-13ba-488f-a99f-93a027e02e86/46P9bapUv1.lottie" autoplay loop style="width: 100%; height: 100%;"></dotlottie-wc>',
                 error: '<dotlottie-wc src="https://lottie.host/adeb3497-0612-44f8-bddc-c7c564f22c9b/ypALfoP56V.lottie" autoplay loop style="width: 100%; height: 100%;"></dotlottie-wc>',
                 confirm: '<i class="fa-solid fa-satellite-dish text-green-400 text-6xl animate-pulse"></i>'
             };
-            const iconContainerClass = type === 'confirm' ? 'w-24 h-24 -mt-16 flex items-center justify-center' : 'w-24 h-24 -mt-16';
+            const iconContainerClass = type === 'confirm' ? 'w-24 h-24 -mt-16 flex items-center justify-content' : 'w-24 h-24 -mt-16';
 
             let buttonsHTML = '';
             if (primaryButton) {
@@ -604,14 +616,10 @@
             }
         }
         
-
-        // --- Global Variables ---
         window.dbData = { users: {}, posts: {} };
         const DEFAULT_AVATAR = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
         let currentPaymentData = {};
         
-        // --- Payment & Withdrawal Rules ---
-        // MODIFIED: Minimum withdraw changed to 100
         const MIN_DEPOSIT = 50; const MAX_DEPOSIT = 5000; const MIN_WITHDRAW = 100; const MAX_WITHDRAW = 5000; const WITHDRAW_LIMIT_PER_DAY = 2;
         const paymentMethods = {
             bkash: { name: 'bKash', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ_HdpMiHFyZ_YfUCB_-vNcDujA8hYsYys91VA0TCyzQ&s=10', number: '01647712206', type: 'Send Money' },
@@ -619,8 +627,7 @@
             rocket: { name: 'Rocket', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnNnydSE3RbmYHBeYiFeuxbin5CoY1G_uGC6n9gG3CPw&s=10', number: '016477122060', type: 'Send Money' }
         };
 
-        function timeAgo(isoDateString) {
-            const date = new Date(isoDateString); const seconds = Math.floor((new Date() - date) / 1000);
+        function timeAgo(isoDateString) { const date = new Date(isoDateString); const seconds = Math.floor((new Date() - date) / 1000);
             if (seconds < 2) return `just now`; if (seconds < 60) return `${seconds}s ago`; const minutes = Math.floor(seconds / 60); if (minutes < 60) return `${minutes}m ago`; const hours = Math.floor(minutes / 60); if (hours < 24) return `${hours}h ago`; const days = Math.floor(hours / 24); return `${days}d ago`;
         }
 
@@ -667,27 +674,26 @@
                          return;
                     }
 
-                    // If role is correct, start the main data listener
                     database.ref().on('value', (snapshot) => {
                         window.dbData = snapshot.val() || { users: {}, posts: {} };
                         const currentSponsorData = window.dbData.users?.[user.uid];
                         
                         if (!currentSponsorData) { auth.signOut(); return; }
                         
-                        // Auto-assign verified badge (index 0) if KYC is verified and no badge is set
                         if (currentSponsorData.kycStatus === 'verified' && (currentSponsorData.verifiedBadge === undefined || currentSponsorData.verifiedBadge === null)) {
                             database.ref('users/' + user.uid + '/verifiedBadge').set(0);
                         }
                         
                         if (isInitialAuthCheck) {
                              isInitialAuthCheck = false;
+                             cleanupOldHistory();
                              runSplashAnimation(() => {
                                 screens.dashboard.classList.remove('hidden');
                                 setTimeout(() => {
                                     setActiveNavItem(document.getElementById('nav-manage-posts'));
                                     navigateToPage('manage-posts-content', true);
                                     checkTimedEvents();
-                                    setInterval(updateAllTimers, 1000); // Start the global timer
+                                    setInterval(updateAllTimers, 1000);
                                 }, 50);
                             });
                         }
@@ -716,7 +722,7 @@
                                 case 'mailbox-content': renderMailbox(); break;    
                                 case 'history-content': renderHistoryPage(); break;
                                 case 'kyc-content': renderKycPage(); break;
-                                case 'statement-content': renderEventsAndEarningsPage(); break;
+                                case 'statement-content': renderStatementPage(); break;
                                 case 'feedback-content': renderFeedbackPage(); break;
                             }
                         }
@@ -838,7 +844,7 @@
 
             document.getElementById('add-rule-btn').addEventListener('click', () => {
                 const container = document.getElementById('rules-container');
-                const ruleCount = container.querySelectorAll('.custom-rule').length + 5; // +4 fixed rules
+                const ruleCount = container.querySelectorAll('.custom-rule').length + 5;
                 const ruleWrapper = document.createElement('div');
                 ruleWrapper.className = 'relative flex items-center custom-rule';
                 
@@ -875,9 +881,9 @@
                 const battleType = battleTypeSelect.value;
                 let slots, prizeRanks;
                 if (battleType === 'Clash Squad') {
-                    slots = 2; // Always 2 teams for CS
-                    prizeRanks = ['Top 1']; // Only one winner
-                } else { // Battle Royal
+                    slots = 2;
+                    prizeRanks = ['Top 1'];
+                } else {
                     if (teamType === 'Solo') { slots = 48; } else if (teamType === 'Duo') { slots = 24; } else { slots = 12; }
                     prizeRanks = Array.from({ length: slots }, (_, i) => `Top ${i + 1}`);
                 }
@@ -898,44 +904,35 @@
                 const mapSelectionContainer = document.getElementById('map-selection-container');
                 const mapCheckboxes = document.querySelectorAll('#map-checkboxes-container input');
 
-                // Reset map selections
                 mapCheckboxes.forEach(cb => { cb.checked = false; cb.disabled = false; });
                 document.getElementById('map-selection-count').textContent = '0';
 
                 if (battleType === 'Clash Squad') {
-                    // Update Fees
                     document.getElementById('paid-fee-text').textContent = "Fee: 7 TK";
                     document.getElementById('practice-fee-text').textContent = "Fee: 4 TK";
-                    // Update Team Types
-                    teamTypeContainer.innerHTML = `
-                        <option value="4v4">4v4</option>
-                        <option value="2v2">2v2</option>
-                        <option value="1v1">1v1</option>
-                    `;
-                    // Lock Maps and Num Matches
+                    teamTypeContainer.innerHTML = `<option value="4v4">4v4</option><option value="2v2">2v2</option><option value="1v1">1v1</option>`;
                     numMatchesContainer.style.display = 'none';
                     mapSelectionContainer.style.display = 'none';
-                } else { // Battle Royal
-                    // Reset Fees
+                } else {
                     document.getElementById('paid-fee-text').textContent = "Fee: 10 TK";
                     document.getElementById('practice-fee-text').textContent = "Fee: 5 TK";
-                    // Reset Team Types
-                    teamTypeContainer.innerHTML = `
-                        <option value="Squad">Squad</option>
-                        <option value="Duo">Duo</option>
-                        <option value="Solo">Solo</option>
-                    `;
-                    // Show Maps and Num Matches
+                    teamTypeContainer.innerHTML = `<option value="Squad">Squad</option><option value="Duo">Duo</option><option value="Solo">Solo</option>`;
                     numMatchesContainer.style.display = 'block';
                     mapSelectionContainer.style.display = 'block';
                 }
                 
-                // Update entry fee visibility based on practice/paid
                 const isPractice = eventType === 'practice';
                 document.getElementById('entry-fee-container').style.display = isPractice ? 'none' : 'block';
                 document.getElementById('prize-details-container').style.display = isPractice ? 'none' : 'block';
                 document.getElementById('post-entry-fee').required = !isPractice;
-                if (isPractice) document.getElementById('post-entry-fee').value = 0;
+                
+                if (isPractice) { 
+                    document.getElementById('post-entry-fee').value = 0;
+                    // Uncheck all prize boxes when switching to practice
+                    document.querySelectorAll('#prize-options-container input[type="checkbox"]:checked').forEach(cb => {
+                        cb.click(); // Simulate a click to uncheck and hide the input
+                    });
+                }
 
                 updatePrizesAndSlots();
             }
@@ -962,7 +959,7 @@
                     if (!editingPostId) {
                         if (battleType === 'Clash Squad') {
                             creationFee = (eventType === 'paid') ? 7 : 4;
-                        } else { // Battle Royal
+                        } else {
                             creationFee = (eventType === 'paid') ? 10 : 5;
                         }
                     }
@@ -999,6 +996,9 @@
                                 totalPrizePool += amount; 
                             } 
                         });
+                        if (winningPrizes.length === 0) {
+                            throw new Error("Paid Scrim must have at least one winning prize set.");
+                        }
                     } else { entryFee = 0; winningPrizes = []; totalPrizePool = 0; }
                     
                     let totalDeductionFromLive = creationFee;
@@ -1028,10 +1028,12 @@
                         maps = Array.from(mapContainer.querySelectorAll('input:checked')).map(cb => cb.value);
                         numMatches = parseInt(numMatchesSelect.value);
                     }
+                    const eventName = document.getElementById('post-event-name').value;
     
                     const postData = { 
                         author: { name: currentUserData.name, avatar: currentUserData.avatar || DEFAULT_AVATAR }, authorId: auth.currentUser.uid, imageUrl: imageInfo.url, imageSizeKB: imageInfo.size, entryFee, matchDate: matchStartFullDate,
-                        details: { eventType, eventName: document.getElementById('post-event-name').value, matchType: battleType, teamType: document.getElementById('post-team-type').value, numMatches: numMatches, maps: maps, winningPrizes, rules, tags: document.getElementById('post-tags').value.split(',').map(tag => tag.trim()).filter(Boolean).slice(0, 5), idPassTime: document.getElementById('post-idpass-time').value, matchStartTime: document.getElementById('post-matchstart-time').value }
+                        details: { eventType, eventName: eventName, matchType: battleType, teamType: document.getElementById('post-team-type').value, numMatches: numMatches, maps: maps, winningPrizes, rules, tags: document.getElementById('post-tags').value.split(',').map(tag => tag.trim()).filter(Boolean).slice(0, 5), idPassTime: document.getElementById('post-idpass-time').value, matchStartTime: document.getElementById('post-matchstart-time').value },
+                        creationFee: creationFee
                     };
     
                     const updates = {};
@@ -1049,6 +1051,13 @@
                         }
                         if (entryFee === 0 && totalPrizePool > 0) {
                              updates[`/users/${auth.currentUser.uid}/wallet/event`] = (currentUserData.wallet.event || 0) + totalPrizePool;
+                        }
+                        if (creationFee > 0) {
+                            const transactionRef = database.ref(`users/${auth.currentUser.uid}/transactions`).push();
+                            updates[`users/${auth.currentUser.uid}/transactions/${transactionRef.key}`] = {
+                                id: transactionRef.key, type: 'Fee', description: `Match Creation: ${eventName}`,
+                                amount: -creationFee, status: 'completed', timestamp: new Date().toISOString()
+                            };
                         }
                     }
                     
@@ -1085,7 +1094,7 @@
                 submitBtn.textContent = submitBtn.dataset.createText; 
                 postImageUploadInput.required = true; 
                 document.querySelectorAll('.custom-rule').forEach(el => el.remove());
-                updateFormForMatchType(); // This will reset form fields based on the default match type
+                updateFormForMatchType();
             }
            
             const navItems = document.querySelectorAll('.nav-item'), navIndicator = document.getElementById('nav-indicator'); const allHeaders = document.querySelectorAll('header'); const transitionOverlay = document.getElementById('page-transition-overlay');
@@ -1097,17 +1106,36 @@
                      document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden'));
                      const newPage = document.getElementById(pageId); if (newPage) newPage.classList.remove('hidden');
                      allHeaders.forEach(h => h.classList.add('hidden'));
-                     switch(pageId) { 
-                        case 'wallet-content': case 'profile-content': case 'mailbox-content': document.getElementById('main-header').classList.remove('hidden'); break; 
-                        case 'add-post-content': document.getElementById('add-post-header').classList.remove('hidden'); break; 
-                        case 'manage-posts-content': document.getElementById('manage-posts-header').classList.remove('hidden'); break; 
-                        case 'history-content': document.getElementById('history-header').classList.remove('hidden'); break;
-                        case 'kyc-content': document.getElementById('kyc-header').classList.remove('hidden'); break;
-                        case 'statement-content': document.getElementById('statement-header').classList.remove('hidden'); break;
-                        case 'feedback-content': document.getElementById('feedback-header').classList.remove('hidden'); break;
-                        case 'account-settings-content': document.getElementById('account-settings-header').classList.remove('hidden'); break;
-                        default: document.getElementById('main-header').classList.remove('hidden');
-                    }
+                    
+                     const pageToNavMap = {
+                        'manage-posts-content': 'nav-manage-posts',
+                        'wallet-content': 'nav-wallet',
+                        'statement-content': 'nav-statement',
+                        'mailbox-content': 'nav-mailbox',
+                        'profile-content': 'nav-profile',
+                        'history-content': 'nav-profile',
+                        'kyc-content': 'nav-profile',
+                        'feedback-content': 'nav-profile',
+                        'account-settings-content': 'nav-profile'
+                     };
+
+                     const headerMap = {
+                        'wallet-content': 'main-header', 'profile-content': 'main-header', 'mailbox-content': 'main-header',
+                        'add-post-content': 'add-post-header', 
+                        'manage-posts-content': 'manage-posts-header', 
+                        'history-content': 'history-header',
+                        'kyc-content': 'kyc-header',
+                        'statement-content': 'statement-header',
+                        'feedback-content': 'feedback-header',
+                        'account-settings-content': 'account-settings-header',
+                     };
+
+                     const headerId = headerMap[pageId] || 'main-header';
+                     document.getElementById(headerId).classList.remove('hidden');
+
+                     const navItemId = pageToNavMap[pageId] || null;
+                     setActiveNavItem(document.getElementById(navItemId));
+                     
                      if (pageId === 'add-post-content' && !document.getElementById('editing-post-id').value) { resetPostForm(); }
                      
                      if(pageId === 'manage-posts-content') renderManagePostsPage();
@@ -1115,7 +1143,7 @@
                      if(pageId === 'mailbox-content') renderMailbox();
                      if(pageId === 'history-content') renderHistoryPage();
                      if(pageId === 'kyc-content') renderKycPage();
-                     if(pageId === 'statement-content') renderEventsAndEarningsPage();
+                     if(pageId === 'statement-content') renderStatementPage();
                      if(pageId === 'feedback-content') renderFeedbackPage();
                 }
                 if (isInitial) { 
@@ -1128,13 +1156,9 @@
                     }, 200); 
                 }
             }
-            navItems.forEach(item => item.addEventListener('click', (e) => { e.preventDefault(); setActiveNavItem(item); const pageId = item.id.replace('nav-', '') + '-content'; navigateToPage(pageId); }));
-            document.getElementById('wallet-button').addEventListener('click', () => { navigateToPage('wallet-content'); setActiveNavItem(document.getElementById('nav-wallet')); }); 
-            document.getElementById('header-create-post-btn').addEventListener('click', () => { 
-                resetPostForm(); 
-                navigateToPage('add-post-content'); 
-                setActiveNavItem(null); 
-            });
+            navItems.forEach(item => item.addEventListener('click', (e) => { e.preventDefault(); const pageId = item.id.replace('nav-', '') + '-content'; navigateToPage(pageId); }));
+            document.getElementById('wallet-button').addEventListener('click', () => navigateToPage('wallet-content')); 
+            document.getElementById('header-create-post-btn').addEventListener('click', () => navigateToPage('add-post-content'));
             document.getElementById('feedback-button').addEventListener('click', () => navigateToPage('feedback-content'));
             document.getElementById('history-button').addEventListener('click', () => navigateToPage('history-content'));
             document.getElementById('kyc-button').addEventListener('click', () => navigateToPage('kyc-content'));
@@ -1161,14 +1185,25 @@
             
              function createManagePostCardHTML(post) { 
                 let buttonsHTML = '', statusText = 'Upcoming', statusClass = 'upcoming';
-                const goLiveStatus = getGoLiveStatus(post).status;
+                const hasParticipants = post.participants && Object.keys(post.participants).length > 0;
 
                 if (post.status === 'cancelled') { statusText = `Cancelled ${post.cancellationReason === 'auto' ? '(Auto)' : ''}`; statusClass = 'cancelled'; } 
                 else if (post.status === 'completed') { statusText = 'Completed'; statusClass = 'completed'; } 
-                else if (post.status.startsWith('live')) { statusText = 'Live'; statusClass = 'live'; }
+                else if (post.status.startsWith('live')) { 
+                    statusText = 'Live'; statusClass = 'live'; 
+                    let extraButtons = '';
+                    if (!hasParticipants) {
+                        extraButtons = `<button class="delete-post-btn text-white bg-red-600 hover:bg-red-700 w-9 h-9 rounded-full flex items-center justify-center" title="Delete Empty Match"><i class="fa-solid fa-trash"></i></button>`;
+                    }
+                    buttonsHTML = `<div class="flex items-center justify-between gap-2 mt-3">
+                                    <button class="flex-1 py-2 rounded-lg text-sm font-bold action-button manage-live-btn">Manage Live</button>
+                                    ${extraButtons}
+                                 </div>`;
+                }
                 
                 if (post.status === 'upcoming') {
-                    buttonsHTML += `<div class="flex items-center justify-between gap-2 mt-3">
+                    statusText = 'Upcoming'; statusClass = 'upcoming';
+                    buttonsHTML = `<div class="flex items-center justify-between gap-2 mt-3">
                                         <button class="move-to-live-btn text-white bg-yellow-600 hover:bg-yellow-700 py-2 px-3 rounded-lg text-sm font-bold flex-1">Go Live</button>
                                         <div class="flex items-center gap-2">
                                             <button class="edit-post-btn text-white bg-blue-600 hover:bg-blue-700 w-9 h-9 rounded-full flex items-center justify-center"><i class="fa-solid fa-pencil"></i></button>
@@ -1176,10 +1211,7 @@
                                         </div>
                                     </div>`;
                 } else if (post.status === 'completed' || post.status === 'cancelled') {
-                    buttonsHTML = `<div class="mt-3"><button class="w-full py-2 rounded-lg text-sm font-bold bg-gray-600 cursor-default">View Details</button></div>`;
-                }
-                else {
-                    buttonsHTML = `<div class="mt-3"><button class="w-full py-2 rounded-lg text-sm font-bold action-button manage-live-btn">Manage Live</button></div>`;
+                    buttonsHTML = `<div class="mt-3"><button class="w-full py-2 rounded-lg text-sm font-bold bg-gray-600 cursor-pointer view-details-btn">View Details</button></div>`;
                 }
 
                 return `<div class="manage-post-card rounded-2xl overflow-hidden shadow-lg flex" data-post-id="${post.id}">
@@ -1212,6 +1244,7 @@
                 else if (e.target.closest('.delete-post-btn')) { handleDeletePost(postId); }
                 else if (e.target.closest('.move-to-live-btn')) { handleMoveToLive(postId); }
                 else if (e.target.closest('.manage-live-btn')) { renderSponsorLiveView(postId); }
+                else if (e.target.closest('.view-details-btn')) { renderSponsorHistoryView(postId); }
                 else if (e.target.closest('img')) { showParticipantList(postId); }
                 else { 
                     if (post.status === 'completed' || post.status === 'cancelled') {
@@ -1263,6 +1296,11 @@
                         body: { reason: `আপনার ম্যাচটি নির্ধারিত সময়ে শুরু না করতে পারায় এবং এমন ঘটনা ৩ বার হওয়ায় আপনার লাইভ ওয়ালেট থেকে ৫০ টাকা কেটে নেওয়া হয়েছে।` },
                         timestamp: new Date().toISOString()
                     };
+                    const transactionRef = database.ref(`users/${auth.currentUser.uid}/transactions`).push();
+                    updates[`users/${auth.currentUser.uid}/transactions/${transactionRef.key}`] = {
+                        id: transactionRef.key, type: 'Penalty', description: '3 auto-cancellations penalty',
+                        amount: -50, status: 'completed', timestamp: new Date().toISOString()
+                    };
                 }
                 
                 await database.ref().update(updates);
@@ -1296,7 +1334,6 @@
             }
             
             async function handleMoveToLive(postId) {
-                // MODIFIED: Changed popup type to 'confirm' to show icon instead of Lottie
                 showCustomModal({
                     type: 'confirm',
                     title: 'Go Live?',
@@ -1346,6 +1383,7 @@
                 const post = window.dbData.posts[postId]; if (!post) return; 
                 
                 const isLive = post.status.startsWith('live');
+                const isHistory = post.status === 'completed' || post.status === 'cancelled';
 
                 const participantsHTML = Object.values(post.participants || {}).map(p => { 
                     const user = window.dbData.users[p.userId];
@@ -1353,16 +1391,20 @@
                     if (!user) return ''; 
                     const teamName = post.details.teamType.toLowerCase() === 'solo' ? p.players[0].name : (team ? team.name : 'Unknown Team');
                     
-                    const kickButtonHTML = isLive 
-                        ? `<button class="bg-yellow-800 text-yellow-500 cursor-not-allowed px-3 py-1 text-xs rounded-md" disabled>Kick</button>`
-                        : `<button class="kick-team-btn bg-yellow-600 hover:bg-yellow-700 px-3 py-1 text-xs rounded-md" data-user-id="${p.userId}" data-post-id="${postId}">Kick</button>`;
+                    let buttonsHTML = '';
+                    if (!isHistory) {
+                        const kickButtonHTML = isLive 
+                            ? `<button class="bg-yellow-800 text-yellow-500 cursor-not-allowed px-3 py-1 text-xs rounded-md" disabled>Kick</button>`
+                            : `<button class="kick-team-btn bg-yellow-600 hover:bg-yellow-700 px-3 py-1 text-xs rounded-md" data-user-id="${p.userId}" data-post-id="${postId}">Kick</button>`;
+                        buttonsHTML = `<div class="flex gap-2">
+                                        ${kickButtonHTML}
+                                        <button class="ban-team-btn bg-red-600 hover:bg-red-700 px-3 py-1 text-xs rounded-md" data-user-id="${p.userId}" data-post-id="${postId}">Ban</button>
+                                     </div>`;
+                    }
 
                     return `<div class="bg-[#2a2a2a] rounded-lg p-3 flex justify-between items-center">
                                 <span>#${p.slotNumber} ${teamName}</span>
-                                <div class="flex gap-2">
-                                    ${kickButtonHTML}
-                                    <button class="ban-team-btn bg-red-600 hover:bg-red-700 px-3 py-1 text-xs rounded-md" data-user-id="${p.userId}" data-post-id="${postId}">Ban</button>
-                                </div>
+                                ${buttonsHTML}
                             </div>`; 
                 }).join(''); 
                 
@@ -1375,17 +1417,68 @@
             }
             
             function handleDeletePost(postId) {
+                const post = window.dbData.posts[postId];
+                if (!post) return;
+            
+                const isUpcoming = post.status === 'upcoming';
+                const hasParticipants = post.participants && Object.keys(post.participants).length > 0;
+
+                let canGetRefund = false;
+                let canDeleteNoRefund = false; 
+                let refundAmount = 0;
+
+                if (isUpcoming) {
+                    canGetRefund = true;
+                } else if (post.status.startsWith('live') && !hasParticipants) {
+                    const deadline = new Date(post.matchDate).getTime() + (5 * 60 * 60 * 1000);
+                    if (Date.now() < deadline) {
+                        canGetRefund = true;
+                    } else {
+                        canDeleteNoRefund = true;
+                    }
+                }
+                
+                if (!canGetRefund && !canDeleteNoRefund) {
+                     showModal('error', 'Deletion Not Allowed', 'This match has participants and cannot be deleted directly. Please manage or cancel it from the live panel.');
+                     return;
+                }
+
+                if (canGetRefund) {
+                    refundAmount = (post.creationFee || 0) * 0.5;
+                }
+            
+                let message = 'This will permanently delete the event post. This action cannot be undone.';
+                if (canGetRefund && refundAmount > 0) {
+                    message += ` You will receive a 50% refund (${refundAmount.toFixed(2)} TK) of the creation fee.`;
+                } else if (canDeleteNoRefund) {
+                     message += ' The management window for this empty match has passed, so no refund will be issued upon deletion.';
+                }
+            
                 showCustomModal({
                     type: 'error',
                     title: 'Confirm Deletion',
-                    message: 'This will permanently delete the event post. This action cannot be undone and will not refund players if they have already booked.',
+                    message: message,
                     primaryButton: {
                         text: 'Yes, Delete Post',
                         onClick: async () => {
                             try {
-                                await database.ref(`/posts/${postId}`).remove();
+                                showLoader('Deleting...');
+                                const updates = {};
+                                updates[`/posts/${postId}`] = null;
+                                if (refundAmount > 0) {
+                                    updates[`/users/${auth.currentUser.uid}/wallet/live`] = firebase.database.ServerValue.increment(refundAmount);
+                                    
+                                    const transactionRef = database.ref(`users/${auth.currentUser.uid}/transactions`).push();
+                                    updates[`/users/${auth.currentUser.uid}/transactions/${transactionRef.key}`] = {
+                                        id: transactionRef.key, type: 'Refund', description: `50% refund for deleting match: ${post.details.eventName}`,
+                                        amount: refundAmount, status: 'completed', timestamp: new Date().toISOString()
+                                    };
+                                }
+                                await database.ref().update(updates);
+                                hideLoader();
                                 showModal('success', 'Post Deleted', 'The event post has been permanently removed.');
                             } catch (err) {
+                                hideLoader();
                                 handleFirebaseError(err);
                             }
                         }
@@ -1396,77 +1489,98 @@
 
             function handleEditPost(postId) {
                 const postToEdit = window.dbData.posts[postId];
-                if (!postToEdit) { console.error("Post not found for editing:", postId); return; }
+                if (!postToEdit) {
+                    console.error("Post not found for editing:", postId);
+                    return;
+                }
                 resetPostForm();
                 try {
                     document.getElementById('editing-post-id').value = postId;
+            
                     document.querySelector(`input[name="event-type"][value="${postToEdit.details.eventType || 'paid'}"]`).click();
-                    
-                    // Set Battle Type and trigger change to update form
+            
                     battleTypeSelect.value = postToEdit.details.matchType || 'Battle Royal';
-                    battleTypeSelect.dispatchEvent(new Event('change'));
-
-                    // Set Team Type after battle type has updated the options
                     teamTypeSelect.value = postToEdit.details.teamType || 'Squad';
-                    teamTypeSelect.dispatchEvent(new Event('change'));
-                    
+                    updateFormForMatchType(); 
+            
                     document.getElementById('post-event-name').value = postToEdit.details.eventName || '';
                     document.getElementById('post-entry-fee').value = postToEdit.entryFee;
                     const matchDate = new Date(postToEdit.matchDate);
-                    if (!isNaN(matchDate)) { document.getElementById('post-match-date').value = matchDate.toISOString().split('T')[0]; }
+                    if (!isNaN(matchDate)) {
+                        document.getElementById('post-match-date').value = matchDate.toISOString().split('T')[0];
+                    }
                     document.getElementById('post-idpass-time').value = postToEdit.details.idPassTime || '';
                     document.getElementById('post-matchstart-time').value = postToEdit.details.matchStartTime || '';
-                    document.getElementById('post-num-matches').value = postToEdit.details.numMatches || 1;
-                    
+            
+                    if (postToEdit.details.matchType !== 'Clash Squad') {
+                        document.getElementById('post-num-matches').value = postToEdit.details.numMatches || 1;
+                        mapLimitSpan.textContent = postToEdit.details.numMatches || 1;
+                        const postMaps = postToEdit.details.maps || [];
+                        mapContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                            cb.checked = postMaps.includes(cb.value);
+                        });
+                        mapCountSpan.textContent = mapContainer.querySelectorAll('input:checked').length;
+                    }
+            
+                    if (postToEdit.details.eventType !== 'practice' && postToEdit.details.winningPrizes) {
+                        postToEdit.details.winningPrizes.forEach(prizeData => {
+                            const cb = prizeContainer.querySelector(`input[data-prize-name="${prizeData.rank}"]`);
+                            if (cb) {
+                                cb.checked = true;
+                                const prizeCheckboxDiv = cb.closest('.prize-checkbox');
+                                const inputContainer = prizeCheckboxDiv.querySelector('.prize-input-container');
+                                inputContainer.style.maxHeight = '100px';
+                                inputContainer.style.opacity = '1';
+                                inputContainer.style.marginTop = '0.5rem';
+                                inputContainer.querySelector('input').value = prizeData.prize;
+                                prizeCheckboxDiv.querySelector('.fa-check').classList.remove('hidden');
+                            }
+                        });
+                    }
+
                     const rulesContainer = document.getElementById('rules-container');
                     const fixedRulesCount = rulesContainer.querySelectorAll('p.form-input').length;
-                    
                     const customRules = (postToEdit.details.rules || []).slice(fixedRulesCount);
                     customRules.forEach((rule, index) => {
                         const ruleCount = index + fixedRulesCount + 1;
                         const ruleWrapper = document.createElement('div');
                         ruleWrapper.className = 'relative flex items-center custom-rule';
                         const newRuleInput = document.createElement('input');
-                        newRuleInput.type = 'text'; newRuleInput.className = 'form-input rule-input pr-10'; newRuleInput.placeholder = `নিয়ম #${ruleCount}`; newRuleInput.value = rule; newRuleInput.required = true;
+                        newRuleInput.type = 'text';
+                        newRuleInput.className = 'form-input rule-input pr-10';
+                        newRuleInput.placeholder = `নিয়ম #${ruleCount}`;
+                        newRuleInput.value = rule;
+                        newRuleInput.required = true;
                         const deleteBtn = document.createElement('button');
-                        deleteBtn.type = 'button'; deleteBtn.className = 'absolute right-3 text-red-500 hover:text-red-400 focus:outline-none'; deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>'; deleteBtn.onclick = () => ruleWrapper.remove();
-                        ruleWrapper.appendChild(newRuleInput); ruleWrapper.appendChild(deleteBtn); rulesContainer.appendChild(ruleWrapper);
+                        deleteBtn.type = 'button';
+                        deleteBtn.className = 'absolute right-3 text-red-500 hover:text-red-400 focus:outline-none';
+                        deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+                        deleteBtn.onclick = () => ruleWrapper.remove();
+                        ruleWrapper.appendChild(newRuleInput);
+                        ruleWrapper.appendChild(deleteBtn);
+                        rulesContainer.appendChild(ruleWrapper);
                     });
-
+            
                     document.getElementById('post-tags').value = (postToEdit.details.tags || []).join(', ');
+            
                     postImagePreview.src = postToEdit.imageUrl;
-                    postImagePreview.classList.remove('hidden'); postImagePlaceholder.classList.add('hidden');
-                    postImageUploadInput.required = false;
-
-                    if (postToEdit.details.matchType !== 'Clash Squad') {
-                        mapLimitSpan.textContent = postToEdit.details.numMatches || 1;
-                        const postMaps = postToEdit.details.maps || [];
-                        mapContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = postMaps.includes(cb.value); });
-                        mapCountSpan.textContent = mapContainer.querySelectorAll('input:checked').length;
-                    }
-
-                    if(postToEdit.details.eventType !== 'practice') {
-                        (postToEdit.details.winningPrizes || []).forEach(prizeData => {
-                            const cb = prizeContainer.querySelector(`input[data-prize-name="${prizeData.rank}"]`);
-                            if (cb) {
-                                cb.checked = true;
-                                const prizeCheckboxDiv = cb.closest('.prize-checkbox');
-                                const inputContainer = prizeCheckboxDiv.querySelector('.prize-input-container');
-                                inputContainer.style.maxHeight = '100px'; inputContainer.style.opacity = '1'; inputContainer.style.marginTop = '0.5rem';
-                                inputContainer.querySelector('input').value = prizeData.prize;
-                                prizeCheckboxDiv.querySelector('.fa-check').classList.remove('hidden');
-                            }
-                        });
-                    }
+                    postImagePreview.classList.remove('hidden');
+                    postImagePlaceholder.classList.add('hidden');
+                    postImageUploadInput.required = false; 
+            
                     const submitBtn = document.getElementById('create-post-submit-btn');
                     submitBtn.textContent = submitBtn.dataset.editText;
+            
                     navigateToPage('add-post-content');
                     setActiveNavItem(null);
+            
                 } catch (error) {
                     console.error("Error populating form for edit:", error);
                     showModal('error', 'Could Not Edit', 'An error occurred while loading the post data for editing.');
+                    resetPostForm(); 
                 }
             }
+            
 
             function setupTabs(containerId, buttonClass, sectionClass) {
                 const container = document.getElementById(containerId); if (!container) return;
@@ -1493,7 +1607,7 @@
                         const matchDate = new Date(post.matchDate);
                         const [h,m] = post.details.idPassTime.split(':');
                         const idPassTime = new Date(matchDate.getFullYear(), matchDate.getMonth(), matchDate.getDate(), h, m).getTime();
-                        const deadline = idPassTime + (10 * 60 * 1000); // 10 minute grace period
+                        const deadline = idPassTime + (10 * 60 * 1000);
                         
                         if (now > deadline) {
                             const sponsorRef = database.ref(`users/${post.authorId}/analytics/autoCancelCount`);
@@ -1513,26 +1627,26 @@
                     }
                 });
             }
-            setInterval(checkTimedEvents, 30000); // Check every 30 seconds
+            setInterval(checkTimedEvents, 30000);
 
-            // NEW: Global timer to update all dynamic time elements
             function updateAllTimers() {
                 document.querySelectorAll('[data-countdown-to]').forEach(el => {
                     const endTime = parseInt(el.dataset.countdownTo, 10);
                     const now = Date.now();
                     const remaining = endTime - now;
                     if (remaining > 0) {
-                        const hours = Math.floor(remaining / (1000 * 60 * 60));
+                        const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
                         const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
                         const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
                         el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                     } else {
                         el.textContent = "00:00:00";
-                        // This might be where we trigger the button to show, handled by the main render function
+                        if(el.classList.contains('profit-countdown')) {
+                           renderStatementPage(); 
+                        }
                     }
                 });
             }
-
 
             const lightbox = document.getElementById('image-lightbox'); const lightboxImg = document.getElementById('lightbox-img');
             function showLightbox(src) { if(src) { lightboxImg.src = src; lightbox.classList.remove('hidden'); } }
@@ -1552,12 +1666,15 @@
                         <button id="close-sponsor-view-btn" class="text-gray-400 text-3xl">&times;</button>
                     </div>
                     <div class="px-4 pb-4">
+                        ${renderLeaderboardImageUpload(postId, post.leaderboardImage)}
                         <div id="sponsor-leaderboard-content-history"></div>
                     </div>
                 `;
             
-                renderSponsorLeaderboard(postId, 'sponsor-leaderboard-content-history', false); // Render read-only leaderboard
+                renderSponsorLeaderboard(postId, 'sponsor-leaderboard-content-history', false); 
                 screens.sponsorLive.classList.remove('hidden');
+                
+                attachLeaderboardImageListeners(postId);
             
                 content.querySelector('#close-sponsor-view-btn').addEventListener('click', () => {
                     screens.sponsorLive.classList.add('hidden');
@@ -1567,11 +1684,13 @@
             
             function handleLeaderboardClick(e) {
                 const editBtn = e.target.closest('.edit-points-btn');
-                if (editBtn) {
+                const row = e.target.closest('.leaderboard-row');
+
+                if(editBtn && !editBtn.disabled) {
                     handleEditPoints(editBtn.dataset.postId, editBtn.dataset.userId);
                     return;
                 }
-                const row = e.target.closest('.leaderboard-row');
+
                 if (row) {
                     const details = row.nextElementSibling;
                     if (details && details.classList.contains('team-members-details')) {
@@ -1583,7 +1702,101 @@
                 }
             }
             
-            function renderSponsorLiveView(postId, activeTabTarget = 'sponsor-manage-content') {
+            function renderLeaderboardImageUpload(postId, existingImage) {
+                return `
+                <div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-4 mb-4">
+                    <h3 class="font-bold text-lg mb-2 text-center text-green-400">Leaderboard / Points Table Image</h3>
+                    <p class="text-xs text-gray-400 text-center mb-3">Upload an image of the final points table.</p>
+                    
+                    <div class="relative w-full h-40 border-2 border-dashed border-gray-600 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-800 transition-colors" id="lb-img-container-${postId}">
+                        <img id="lb-img-preview-${postId}" src="${existingImage || ''}" class="${existingImage ? '' : 'hidden'} w-full h-full object-contain rounded-lg">
+                        <div id="lb-img-placeholder-${postId}" class="${existingImage ? 'hidden' : 'flex'} flex-col items-center">
+                            <i class="fa-solid fa-image text-3xl text-gray-500"></i>
+                            <span class="text-xs text-gray-500 mt-1">Click to Select</span>
+                        </div>
+                        <input type="file" id="lb-img-input-${postId}" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*">
+                    </div>
+                    <button id="lb-img-upload-btn-${postId}" class="w-full mt-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-bold text-white hidden">Upload Image</button>
+                </div>`;
+            }
+
+            function attachLeaderboardImageListeners(postId) {
+                const input = document.getElementById(`lb-img-input-${postId}`);
+                const preview = document.getElementById(`lb-img-preview-${postId}`);
+                const placeholder = document.getElementById(`lb-img-placeholder-${postId}`);
+                const uploadBtn = document.getElementById(`lb-img-upload-btn-${postId}`);
+
+                if(input) {
+                    input.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                                preview.src = ev.target.result;
+                                preview.classList.remove('hidden');
+                                placeholder.classList.add('hidden');
+                                uploadBtn.classList.remove('hidden');
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                }
+
+                if(uploadBtn) {
+                    uploadBtn.addEventListener('click', async () => {
+                        const file = input.files[0];
+                        if(!file) return;
+
+                        const uploadResult = await uploadImage(file, 'leaderboard-images');
+                        if (uploadResult) {
+                            showLoader('Saving...');
+                            await database.ref(`posts/${postId}/leaderboardImage`).set(uploadResult.url);
+                            updateTotalStorage(uploadResult.size);
+                            hideLoader();
+                            uploadBtn.classList.add('hidden');
+                            showModal('success', 'Image Uploaded', 'Leaderboard image has been saved.');
+                        }
+                    });
+                }
+            }
+
+            function renderSponsorManageTab(postId) { 
+                const post = window.dbData.posts[postId]; 
+                const container = document.getElementById('sponsor-manage-content'); 
+                if(!container) return; 
+                
+                let actionsHTML = ''; 
+                if (post.status === 'live_idpass_pending') { 
+                    actionsHTML += `<button class="w-full py-3 rounded-lg text-lg text-white bg-blue-600 hover:bg-blue-700 set-idpass-btn">Set ID & Pass</button>`; 
+                } else if (post.status === 'live_idpass_set' || post.status === 'live_match_running') { 
+                    if(post.roomId && post.roomPass) { 
+                        actionsHTML += `<div class="bg-gray-800 border border-green-700 rounded-xl p-4 mb-4 shadow-lg"><h3 class="text-lg font-bold text-center text-green-300 mb-3">Room Details</h3><div class="space-y-3"><div class="flex justify-between items-center bg-black/30 p-2 rounded-lg"><span class="text-gray-400 text-sm font-semibold">Room ID:</span><code class="text-white font-bold text-lg">${post.roomId}</code><button class="copy-btn bg-gray-600 hover:bg-gray-500 w-8 h-8 rounded-md flex items-center justify-center" data-copy-text="${post.roomId}"><i class="fa-solid fa-copy"></i></button></div><div class="flex justify-between items-center bg-black/30 p-2 rounded-lg"><span class="text-gray-400 text-sm font-semibold">Password:</span><code class="text-white font-bold text-lg">${post.roomPass}</code><button class="copy-btn bg-gray-600 hover:bg-gray-500 w-8 h-8 rounded-md flex items-center justify-center" data-copy-text="${post.roomPass}"><i class="fa-solid fa-copy"></i></button></div></div></div>`; 
+                    } 
+                    if (post.status === 'live_idpass_set') { 
+                        actionsHTML += `<button class="w-full py-3 rounded-lg text-lg action-button match-start-btn">Start Match</button>`; 
+                    } 
+                } 
+                
+                // Add Leaderboard Image Upload Section
+                const imageUploadHTML = renderLeaderboardImageUpload(postId, post.leaderboardImage);
+
+                container.innerHTML = `<div class="space-y-4 max-w-sm mx-auto">${actionsHTML}${imageUploadHTML}</div>`; 
+                
+                // Re-attach listeners for ID/Pass and Start Match
+                container.querySelector('.set-idpass-btn')?.addEventListener('click', () => showIdPassModal(postId)); 
+                container.querySelector('.match-start-btn')?.addEventListener('click', () => handleMatchStart(postId)); 
+                container.querySelectorAll('.copy-btn').forEach(btn => { 
+                    btn.addEventListener('click', (e) => { 
+                        const text = e.currentTarget.dataset.copyText; 
+                        navigator.clipboard.writeText(text).then(() => showModal('success', 'Copied!', 'Room details copied to clipboard.')); 
+                    }); 
+                });
+                
+                // Attach listeners for Image Upload
+                attachLeaderboardImageListeners(postId);
+            }
+            
+            function renderSponsorLiveView(postId, activeTabTarget = 'sponsor-leaderboard-content') {
                 const post = window.dbData.posts[postId]; if (!post) return; 
                 const content = document.getElementById('sponsor-live-view-content'); 
                 screens.sponsorLive.dataset.postId = postId;
@@ -1593,18 +1806,38 @@
                     return;
                 }
                 
+                const idPassTime = getGoLiveStatus(post).idPassTime;
+                const thirtyMinBefore = idPassTime - (30 * 60 * 1000);
+                const canRevert = Date.now() < thirtyMinBefore;
+                
+                const hasParticipants = post.participants && Object.keys(post.participants).length > 0;
+                let emptyMatchTimerHTML = '';
+                if (!hasParticipants && post.status.startsWith('live')) {
+                    const deadline = new Date(post.matchDate).getTime() + (5 * 60 * 60 * 1000); 
+                    if (Date.now() < deadline) {
+                        emptyMatchTimerHTML = `<div class="p-2 text-center bg-yellow-900/50 text-yellow-300 text-xs font-bold">
+                            No participants. You can manage this match for <span data-countdown-to="${deadline}"></span>
+                        </div>`;
+                    }
+                }
+
                 let bottomButtons = ''; 
                 if (post.status !== 'completed' && post.status !== 'cancelled') { 
-                    bottomButtons = `<div class="fixed bottom-0 left-0 w-full p-4 bg-[#1e1e1e] border-t border-gray-700 z-20"><button id="send-prizes-btn" class="w-full py-3 action-button rounded-lg text-lg">Send Prizes & Finalize</button></div>`; 
+                    bottomButtons = `<div class="fixed bottom-0 left-0 w-full p-4 bg-[#1e1e1e] border-t border-gray-700 z-20 flex gap-2">
+                                        ${canRevert ? `<button id="revert-to-upcoming-btn" class="flex-1 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg text-lg">Revert</button>` : ''}
+                                        <button id="send-prizes-btn" class="flex-1 py-3 action-button rounded-lg text-lg">Finalize</button>
+                                    </div>`; 
                 } 
-                content.innerHTML = `<div class="sticky top-0 bg-[#121212]/80 backdrop-blur-md py-4 px-4 flex justify-between items-center z-10"><h2 class="text-2xl font-bold">${post.details.eventName}</h2><button id="close-sponsor-view-btn" class="text-gray-400 text-3xl">&times;</button></div><div class="flex gap-2 mb-4 px-4"><button class="tab-button sponsor-view-tab" data-target="sponsor-manage-content">Manage</button><button class="tab-button sponsor-view-tab" data-target="sponsor-teams-content">Submissions</button><button class="tab-button sponsor-view-tab" data-target="sponsor-participants-content">Participants</button><button class="tab-button sponsor-view-tab" data-target="sponsor-leaderboard-content">Leaderboard</button></div><div class="px-4 pb-24 overflow-y-auto h-[calc(100%-120px)] no-scrollbar"><div id="sponsor-manage-content" class="tab-content-section"></div><div id="sponsor-teams-content" class="tab-content-section"></div><div id="sponsor-participants-content" class="tab-content-section"></div><div id="sponsor-leaderboard-content" class="tab-content-section"></div></div>${bottomButtons}`; 
+                content.innerHTML = `<div class="sticky top-0 bg-[#121212]/80 backdrop-blur-md py-4 px-4 flex justify-between items-center z-10"><h2 class="text-2xl font-bold">${post.details.eventName}</h2><button id="close-sponsor-view-btn" class="text-gray-400 text-3xl">&times;</button></div>${emptyMatchTimerHTML}<div class="flex gap-2 mb-4 px-4"><button class="tab-button sponsor-view-tab" data-target="sponsor-manage-content">Manage</button><button class="tab-button sponsor-view-tab" data-target="sponsor-participants-content">Participants</button><button class="tab-button sponsor-view-tab" data-target="sponsor-leaderboard-content">Leaderboard</button></div><div class="px-4 pb-24 overflow-y-auto h-[calc(100%-120px)] no-scrollbar"><div id="sponsor-manage-content" class="tab-content-section"></div><div id="sponsor-participants-content" class="tab-content-section"></div><div id="sponsor-leaderboard-content" class="tab-content-section"></div></div>${bottomButtons}`; 
+                
                 renderSponsorManageTab(postId); 
-                renderSponsorTeamsTab(postId); 
                 renderSponsorParticipantsTab(postId); 
                 renderSponsorLeaderboard(postId, 'sponsor-leaderboard-content', true); 
+                
                 screens.sponsorLive.classList.remove('hidden'); 
                 content.querySelector('#close-sponsor-view-btn').addEventListener('click', () => { screens.sponsorLive.classList.add('hidden'); delete screens.sponsorLive.dataset.postId; }); 
                 setupTabs('sponsor-live-view-content', '.sponsor-view-tab', '.tab-content-section'); 
+
                 if(activeTabTarget) { 
                     const desiredTab = content.querySelector(`.sponsor-view-tab[data-target="${activeTabTarget}"]`); 
                     if (desiredTab && !desiredTab.classList.contains('active-tab')) { 
@@ -1616,24 +1849,178 @@
                 } 
                 if(post.status !== 'completed' && post.status !== 'cancelled') { 
                     const sendPrizesBtn = content.querySelector('#send-prizes-btn'); 
+                    const revertBtn = content.querySelector('#revert-to-upcoming-btn');
                     if(sendPrizesBtn) { 
                         sendPrizesBtn.addEventListener('click', () => handleSendPrizes(postId)); 
                         checkFinalizeButtonState(postId); 
                     } 
+                    if(revertBtn) {
+                        revertBtn.addEventListener('click', () => handleRevertToUpcoming(postId));
+                    }
                 } 
             }
-            function renderSponsorLeaderboard(postId, containerId = 'sponsor-leaderboard-content', allowEdit = true) { const post = window.dbData.posts[postId]; const container = document.getElementById(containerId); if (!container) return; const resultsSource = post['approvedResults'] || {}; const isSolo = post.details.teamType.toLowerCase() === 'solo'; const leaderboardData = Object.values(post.participants || {}).map(p => { const user = window.dbData.users[p.userId]; if (!user) return null; const team = user.team; const name = isSolo ? p.players[0].name : (team ? team.name : 'Unknown Team'); const logo = isSolo ? user.avatar : (team?.logo || DEFAULT_AVATAR); let totalPoints = 0, totalKills = 0, totalPP = 0, isEdited = false; if (resultsSource[p.userId]) { Object.values(resultsSource[p.userId]).forEach(mapResult => { if(mapResult.edited) isEdited = true; totalPoints += calculatePoints(mapResult.kills, mapResult.position); totalKills += parseInt(mapResult.kills) || 0; totalPP += calculatePoints(0, mapResult.position); }); } return { name, logo, userId: p.userId, totalPoints, totalKills, totalPP, isEdited }; }).filter(Boolean).sort((a, b) => b.totalPoints - a.totalPoints); const getRankClass = (index) => { if (index === 0) return 'bg-yellow-500/20 border-yellow-400'; if (index === 1) return 'bg-gray-400/20 border-gray-300'; if (index === 2) return 'bg-yellow-800/20 border-yellow-700'; return 'bg-[#1e1e1e] border-gray-800'; }; const leaderboardHTML = leaderboardData.map((team, index) => { const teamData = window.dbData.users[team.userId]?.team; let membersHTML = '<p class="text-xs text-gray-500">Team data not available.</p>'; if (teamData && teamData.members) { membersHTML = teamData.members.map((member, idx) => `<li class="flex justify-between text-xs py-1 px-2 rounded ${idx === 0 ? 'bg-yellow-500/20' : ''}"><span>${idx === 0 ? '👑' : ''} ${member.name}</span><span class="text-gray-400">${member.uid}</span></li>`).join(''); } const editButtonHTML = allowEdit ? `<div class="col-span-1 text-center"><button class="edit-points-btn text-blue-400 hover:text-blue-300" data-post-id="${postId}" data-user-id="${team.userId}"><i class="fa-solid fa-pencil"></i></button></div>` : '<div class="col-span-1"></div>'; return `<div class="leaderboard-item-wrapper rounded-lg border ${getRankClass(index)}"><div class="leaderboard-row grid grid-cols-12 items-center p-2 text-sm cursor-pointer" data-user-id="${team.userId}"><span class="font-bold col-span-1 text-center text-lg">#${index + 1}</span><img src="${team.logo}" class="w-8 h-8 rounded-full col-span-1 object-cover"><p class="font-semibold col-span-3 ml-2 truncate">${team.name}</p><p class="text-center col-span-2">${team.totalKills}</p><p class="text-center col-span-2">${team.totalPP}</p><p class="font-bold text-green-400 text-center col-span-2">${team.totalPoints}</p>${editButtonHTML}</div><div class="team-members-details hidden p-3 bg-gray-900/50 border-t border-gray-700"><h5 class="font-bold text-sm mb-2 text-green-300">Team Roster</h5><ul class="space-y-1">${membersHTML}</ul></div></div>` }).join(''); const headerEditCol = allowEdit ? '<span class="text-center col-span-1">EDIT</span>' : '<span class="col-span-1"></span>'; container.innerHTML = `<h3 class="text-xl font-bold mb-3">Leaderboard</h3><div class="grid grid-cols-12 text-xs text-gray-400 font-bold p-2"><span class="col-span-1 text-center">POS</span><span class="col-span-4 ml-2">TEAM</span><span class="text-center col-span-2">KP</span><span class="text-center col-span-2">PP</span><span class="text-center col-span-2">TOTAL</span>${headerEditCol}</div><div class="space-y-2">${leaderboardHTML || '<p class="text-center text-gray-500 p-4">No approved results yet.</p>'}</div>`; if (allowEdit) { container.removeEventListener('click', handleLeaderboardClick); container.addEventListener('click', handleLeaderboardClick); } }
-            function handleEditPoints(postId, userId) { const post = window.dbData.posts[postId]; const teamResults = post.approvedResults?.[userId]; const teamName = window.dbData.users[userId]?.team?.name || 'Team'; if(!teamResults) { showModal('error', 'No results', 'This team has no approved results to edit.'); return; } const modalBox = document.getElementById('edit-points-modal-box'); let formHTML = `<form id="edit-points-form" class="space-y-4"><h3 class="text-xl font-bold mb-2">Edit Points for ${teamName}</h3>`; post.details.maps.forEach(map => { formHTML += `<div class="p-2 bg-gray-900/50 rounded-lg"><p class="font-semibold text-green-400">${map}</p><div class="grid grid-cols-2 gap-2 mt-1"><input type="number" class="form-input text-sm" placeholder="Kills" name="${map}-kills" value="${teamResults[map]?.kills || 0}"><input type="number" class="form-input text-sm" placeholder="Position" name="${map}-position" value="${teamResults[map]?.position || 0}"></div></div>`; }); formHTML += `<div><label class="form-label">Reason for Edit</label><textarea name="edit-reason" class="form-textarea" rows="3" placeholder="Explain why you are changing the points..." required></textarea></div>`; formHTML += `<div><label class="form-label">Evidence Screenshot (Optional)</label><input type="file" name="edit-screenshot" accept="image/*" class="text-sm file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200"></div>`; formHTML += `<div class="flex gap-2 mt-4"><button type="button" id="close-edit-modal-btn" class="flex-1 py-2 bg-gray-600 rounded-lg">Cancel</button><button type="submit" class="flex-1 py-2 action-button rounded-lg">Save & Notify</button></div></form>`; modalBox.innerHTML = formHTML; screens.editPoints.classList.remove('hidden'); modalBox.querySelector('#close-edit-modal-btn').addEventListener('click', ()=>screens.editPoints.classList.add('hidden')); modalBox.querySelector('#edit-points-form').addEventListener('submit', async (e) => { e.preventDefault(); handleFormSubmit(e.target, 'Saving...', async () => { const uploadResult = await uploadImage(e.target.elements['edit-screenshot'].files[0], 'ban-evidence'); const screenshotDataUrl = uploadResult ? uploadResult.url : null; if (uploadResult) updateTotalStorage(uploadResult.size); const reason = e.target.elements['edit-reason'].value; const mailId = Date.now(); const updates = {}; updates[`/users/${userId}/mailbox/${mailId}`] = { id: mailId, postId: parseInt(postId), type: 'edit', subject: 'Points Updated by Sponsor', body: { reason, screenshot: screenshotDataUrl }, timestamp: new Date().toISOString(), read: false }; updates[`/users/${auth.currentUser.uid}/mailbox/${mailId}`] = { ...updates[`/users/${userId}/mailbox/${mailId}`], subject: `Points updated for ${teamName}` }; post.details.maps.forEach(map => { updates[`/posts/${postId}/approvedResults/${userId}/${map}`] = { kills: e.target.elements[`${map}-kills`].value, position: e.target.elements[`${map}-position`].value, edited: true }; }); await database.ref().update(updates); screens.editPoints.classList.add('hidden'); showModal('success', 'Points Updated', `The user has been notified.`); }); }); }
-            function renderSponsorTeamsTab(postId) { const post = window.dbData.posts[postId]; const container = document.getElementById('sponsor-teams-content'); if(!container) return; const teamsHTML = Object.values(post.participants || {}).map(p => { const team = window.dbData.users[p.userId]?.team; if(!team) return ''; return `<button class="p-3 bg-gray-800 rounded-lg team-container text-left w-full" data-user-id="${p.userId}"><p class="font-semibold">${team.name}</p></button>`}).join(''); container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="md:col-span-1 flex flex-col gap-2">${teamsHTML || '<p class="text-gray-500">No teams.</p>'}</div><div id="sponsor-team-details" class="md:col-span-2 bg-black/20 p-4 rounded-lg"><p class="text-gray-500 text-center mt-8">Select a team to view submissions.</p></div></div>`; container.querySelectorAll('.team-container').forEach(el => { el.addEventListener('click', () => { container.querySelectorAll('.team-container').forEach(btn => btn.classList.replace('bg-green-600', 'bg-gray-800')); el.classList.replace('bg-gray-800','bg-green-600'); renderSponsorTeamDetails(postId, el.dataset.userId); }); }); }
-            function renderSponsorTeamDetails(postId, userId) { const post = window.dbData.posts[postId]; const team = window.dbData.users[userId]?.team; if(!post || !team) return; const container = document.getElementById('sponsor-team-details'); const userSubmissions = post.results?.[userId] || {}; const approvedSubmissions = post.approvedResults?.[userId] || {}; const detailsHTML = post.details.maps.map(map => { const submission = userSubmissions[map]; const isApproved = !!approvedSubmissions[map]; let buttonsHTML = ''; if (isApproved) { buttonsHTML = `<button class="w-full mt-3 py-2 rounded text-xs font-bold bg-green-700 cursor-not-allowed" disabled>Approved</button>`; } else if (submission) { buttonsHTML = `<div class="flex gap-2 mt-3"><button class="flex-1 py-2 rounded text-xs font-bold bg-red-600 hover:bg-red-700 reject-result-btn" data-map-name="${map}">Reject</button><button class="flex-1 py-2 rounded text-xs font-bold bg-blue-600 hover:bg-blue-700 approve-result-btn" data-map-name="${map}">Approve</button></div>`; } else { buttonsHTML = `<button class="w-full mt-3 py-2 rounded text-xs font-bold bg-gray-600 hover:bg-gray-700 mark-dnp-btn" data-map-name="${map}">Mark as DNP (0 Pts)</button>`; } if (!submission) { return `<div class="p-4 bg-[#28282B] rounded-lg text-sm"><p class="font-bold text-lg">${map}</p><p class="text-gray-400 mt-2">No submission yet.</p>${buttonsHTML}</div>`; } return `<div class="p-4 bg-[#28282B] rounded-lg text-sm space-y-2"><p class="font-bold text-lg">${map}</p><p>Kills: <span class="font-semibold">${submission.kills}</span> | Position: <span class="font-semibold">#${submission.position}</span></p>${submission.screenshot ? `<div><img src="${submission.screenshot}" class="w-full h-auto object-cover rounded-md cursor-pointer mt-2" onclick="event.stopPropagation(); showLightbox('${submission.screenshot}')"></div>` : '<p class="text-xs text-gray-500 mt-2">No screenshot</p>'}${buttonsHTML}</div>`; }).join(''); container.innerHTML = `<h4 class="font-bold text-xl mb-3">${team.name}'s Submissions</h4><div class="space-y-3">${detailsHTML}</div>`; container.querySelectorAll('.approve-result-btn').forEach(btn => btn.addEventListener('click', () => handleApproveResult(postId, userId, btn.dataset.mapName))); container.querySelectorAll('.mark-dnp-btn').forEach(btn => btn.addEventListener('click', () => handleMarkAsDNP(postId, userId, btn.dataset.mapName))); container.querySelectorAll('.reject-result-btn').forEach(btn => btn.addEventListener('click', () => handleRejectResult(postId, userId, btn.dataset.mapName))); }
-            function renderSponsorManageTab(postId) { const post = window.dbData.posts[postId]; const container = document.getElementById('sponsor-manage-content'); if(!container) return; let actionsHTML = ''; if (post.status === 'live_idpass_pending') { actionsHTML += `<button class="w-full py-3 rounded-lg text-lg text-white bg-blue-600 hover:bg-blue-700 set-idpass-btn">Set ID & Pass</button>`; } else if (post.status === 'live_idpass_set' || post.status === 'live_match_running') { if(post.roomId && post.roomPass) { actionsHTML += `<div class="bg-gray-800 border border-green-700 rounded-xl p-4 mb-4 shadow-lg"><h3 class="text-lg font-bold text-center text-green-300 mb-3">Room Details</h3><div class="space-y-3"><div class="flex justify-between items-center bg-black/30 p-2 rounded-lg"><span class="text-gray-400 text-sm font-semibold">Room ID:</span><code class="text-white font-bold text-lg">${post.roomId}</code><button class="copy-btn bg-gray-600 hover:bg-gray-500 w-8 h-8 rounded-md flex items-center justify-center" data-copy-text="${post.roomId}"><i class="fa-solid fa-copy"></i></button></div><div class="flex justify-between items-center bg-black/30 p-2 rounded-lg"><span class="text-gray-400 text-sm font-semibold">Password:</span><code class="text-white font-bold text-lg">${post.roomPass}</code><button class="copy-btn bg-gray-600 hover:bg-gray-500 w-8 h-8 rounded-md flex items-center justify-center" data-copy-text="${post.roomPass}"><i class="fa-solid fa-copy"></i></button></div></div></div>`; } if (post.status === 'live_idpass_set') { actionsHTML += `<button class="w-full py-3 rounded-lg text-lg action-button match-start-btn">Start Match</button>`; } else { const mapStates = post.mapStates || {}; const mapButtons = post.details.maps.map(map => { const isUnlocked = mapStates[map]?.submissionOpen === true; return `<button class="w-full py-3 rounded-lg text-base font-bold toggle-submission-btn ${isUnlocked ? 'bg-green-800 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}" data-map-name="${map}" ${isUnlocked ? 'disabled' : ''}>${isUnlocked ? `${map} Submissions Open` : `Unlock ${map} Submissions`}</button>`; }).join(''); actionsHTML += `<h3 class="text-xl font-bold mb-3">Unlock Map Submissions</h3><div class="space-y-3">${mapButtons}</div>`; } } container.innerHTML = `<div class="space-y-4 max-w-sm mx-auto">${actionsHTML}</div>`; container.querySelector('.set-idpass-btn')?.addEventListener('click', () => showIdPassModal(postId)); container.querySelector('.match-start-btn')?.addEventListener('click', () => handleMatchStart(postId)); container.querySelectorAll('.toggle-submission-btn').forEach(btn => { btn.addEventListener('click', e => { const mapName = e.target.dataset.mapName; database.ref(`/posts/${postId}/mapStates/${mapName}/submissionOpen`).set(true); }); }); container.querySelectorAll('.copy-btn').forEach(btn => { btn.addEventListener('click', (e) => { const text = e.currentTarget.dataset.copyText; navigator.clipboard.writeText(text).then(() => showModal('success', 'Copied!', 'Room details copied to clipboard.')); }); }); }
             
-            async function handleApproveResult(postId, userId, mapName) { 
-                const submission = window.dbData.posts[postId]?.results?.[userId]?.[mapName]; 
-                if (!submission) return; 
-                await database.ref(`/posts/${postId}/approvedResults/${userId}/${mapName}`).set(submission);
-                // Re-render the same team's details instead of closing
-                renderSponsorTeamDetails(postId, userId);
+            function renderSponsorLeaderboard(postId, containerId = 'sponsor-leaderboard-content', allowEdit = true) {
+                const post = window.dbData.posts[postId];
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                const resultsSource = post['approvedResults'] || {};
+                const isSolo = post.details.teamType.toLowerCase() === 'solo';
+                const isMatchRunning = post.status === 'live_match_running' || post.status === 'completed'; // Allow editing in history view too if needed, but mainly for live
+            
+                const leaderboardData = Object.values(post.participants || {}).map(p => {
+                    const user = window.dbData.users[p.userId];
+                    if (!user) return null;
+                    const team = user.team;
+                    const name = isSolo ? p.players[0].name : (team ? team.name : 'Unknown Team');
+                    const logo = isSolo ? user.avatar : (team?.logo || DEFAULT_AVATAR);
+                    let totalPoints = 0, totalKills = 0, totalPP = 0, isEdited = false;
+                    
+                    if (resultsSource[p.userId]) {
+                        Object.values(resultsSource[p.userId]).forEach(mapResult => {
+                            if(mapResult.edited) isEdited = true;
+                            totalPoints += calculatePoints(mapResult.kills, mapResult.position);
+                            totalKills += parseInt(mapResult.kills) || 0;
+                            totalPP += calculatePoints(0, mapResult.position);
+                        });
+                    }
+                    return { name, logo, userId: p.userId, totalPoints, totalKills, totalPP, isEdited };
+                }).filter(Boolean).sort((a, b) => b.totalPoints - a.totalPoints);
+            
+                const getRankClass = (index) => {
+                    if (index === 0) return 'bg-yellow-500/20 border-yellow-400';
+                    if (index === 1) return 'bg-gray-400/20 border-gray-300';
+                    if (index === 2) return 'bg-yellow-800/20 border-yellow-700';
+                    return 'bg-[#1e1e1e] border-gray-800';
+                };
+            
+                const leaderboardHTML = leaderboardData.map((team, index) => {
+                    const teamData = window.dbData.users[team.userId]?.team;
+                    let membersHTML = '<p class="text-xs text-gray-500">Team data not available.</p>';
+                    if (teamData && teamData.members) {
+                        membersHTML = teamData.members.map((member, idx) => `<li class="flex justify-between text-xs py-1 px-2 rounded ${idx === 0 ? 'bg-yellow-500/20' : ''}"><span>${idx === 0 ? '👑' : ''} ${member.name}</span><span class="text-gray-400">${member.uid}</span></li>`).join('');
+                    }
+                    
+                    // Allow editing if match is running OR if it's history view (allowEdit is passed as false for history view in previous implementation, let's fix that context)
+                    // Actually, allowEdit controls if the column exists. We enable the button based on status.
+                    const canEdit = post.status === 'live_match_running' || post.status === 'completed';
+
+                    const editButtonHTML = allowEdit || post.status === 'completed' ? `<div class="col-span-1 text-center">
+                        <button class="edit-points-btn ${canEdit ? 'text-blue-400 hover:text-blue-300' : 'text-gray-600 cursor-not-allowed'}" 
+                                data-post-id="${postId}" data-user-id="${team.userId}" 
+                                ${!canEdit ? 'disabled title="Cannot edit points now"' : ''}>
+                            <i class="fa-solid fa-pencil"></i>
+                        </button>
+                    </div>` : '<div class="col-span-1"></div>';
+                    
+                    return `<div class="leaderboard-item-wrapper rounded-lg border ${getRankClass(index)}">
+                                <div class="leaderboard-row grid grid-cols-12 items-center p-2 text-sm cursor-pointer" data-user-id="${team.userId}">
+                                    <span class="font-bold col-span-1 text-center text-lg">#${index + 1}</span>
+                                    <img src="${team.logo}" class="w-8 h-8 rounded-full col-span-1 object-cover">
+                                    <p class="font-semibold col-span-3 ml-2 truncate">${team.name}</p>
+                                    <p class="text-center col-span-2">${team.totalKills}</p>
+                                    <p class="text-center col-span-2">${team.totalPP}</p>
+                                    <p class="font-bold text-green-400 text-center col-span-2">${team.totalPoints}</p>
+                                    ${editButtonHTML}
+                                </div>
+                                <div class="team-members-details hidden p-3 bg-gray-900/50 border-t border-gray-700">
+                                    <h5 class="font-bold text-sm mb-2 text-green-300">Team Roster</h5>
+                                    <ul class="space-y-1">${membersHTML}</ul>
+                                </div>
+                            </div>`
+                }).join('');
+                
+                const headerEditCol = (allowEdit || post.status === 'completed') ? '<span class="text-center col-span-1">EDIT</span>' : '<span class="col-span-1"></span>';
+                container.innerHTML = `<h3 class="text-xl font-bold mb-3">Leaderboard</h3><div class="grid grid-cols-12 text-xs text-gray-400 font-bold p-2"><span class="col-span-1 text-center">POS</span><span class="col-span-4 ml-2">TEAM</span><span class="text-center col-span-2">KP</span><span class="text-center col-span-2">PP</span><span class="text-center col-span-2">TOTAL</span>${headerEditCol}</div><div class="space-y-2">${leaderboardHTML || '<p class="text-center text-gray-500 p-4">Enter results for teams.</p>'}</div>`;
+                
+                container.removeEventListener('click', handleLeaderboardClick);
+                container.addEventListener('click', handleLeaderboardClick);
+            }
+
+            function handleEditPoints(postId, userId) {
+                const post = window.dbData.posts[postId];
+                const participantData = Object.values(post.participants || {}).find(p => p.userId === userId);
+                if (!participantData) return;
+
+                const teamResults = post.approvedResults?.[userId] || {};
+                const user = window.dbData.users[userId];
+                const teamName = post.details.teamType.toLowerCase() === 'solo' ? participantData.players[0].name : (user.team?.name || 'Team');
+
+                const modalBox = document.getElementById('edit-points-modal-box');
+
+                let formHTML = `<form id="edit-points-form" class="space-y-4">
+                                    <h3 class="text-xl font-bold mb-2">Edit Points for ${teamName}</h3>`;
+
+                let totalPoints = 0;
+
+                post.details.maps.forEach(map => {
+                    const kills = teamResults[map]?.kills || 0;
+                    const position = teamResults[map]?.position || 0;
+                    const mapPoints = calculatePoints(kills, position);
+                    totalPoints += mapPoints;
+
+                    formHTML += `<div class="p-3 bg-gray-900/50 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-semibold text-green-400">${map}</p>
+                                        <p class="text-xs text-gray-400">Hint: <span class="font-bold text-white" id="hint-${map}">${mapPoints} Pts</span></p>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 mt-2">
+                                        <input type="number" class="form-input text-sm" placeholder="Kills" name="${map}-kills" value="${kills}" oninput="updatePointHint('${map}')">
+                                        <input type="number" class="form-input text-sm" placeholder="Position" name="${map}-position" value="${position}" oninput="updatePointHint('${map}')">
+                                    </div>
+                                </div>`;
+                });
+
+                formHTML += `<div class="text-right mt-2"><p class="text-lg font-bold">Total: <span id="total-points-hint" class="text-green-400">${totalPoints} Pts</span></p></div>`;
+
+                formHTML += `<div class="flex gap-2 mt-4">
+                                <button type="button" id="close-edit-modal-btn" class="flex-1 py-2 bg-gray-600 rounded-lg">Cancel</button>
+                                <button type="submit" class="flex-1 py-2 action-button rounded-lg">Save Points</button>
+                             </div></form>`;
+
+                modalBox.innerHTML = formHTML;
+                screens.editPoints.classList.remove('hidden');
+
+                modalBox.querySelector('#close-edit-modal-btn').addEventListener('click', () => screens.editPoints.classList.add('hidden'));
+
+                modalBox.querySelector('#edit-points-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    handleFormSubmit(e.target, 'Saving...', async () => {
+                        const updates = {};
+                        post.details.maps.forEach(map => {
+                            const kills = e.target.elements[`${map}-kills`].value || 0;
+                            const position = e.target.elements[`${map}-position`].value || 0;
+                            updates[`/posts/${postId}/approvedResults/${userId}/${map}`] = { 
+                                kills: parseInt(kills), 
+                                position: parseInt(position)
+                            };
+                        });
+                        await database.ref().update(updates);
+                        screens.editPoints.classList.add('hidden');
+                        showModal('success', 'Points Saved', `Points for ${teamName} have been updated.`);
+                    });
+                });
+            }
+            
+            window.updatePointHint = function(map) {
+                const form = document.getElementById('edit-points-form');
+                if (!form) return;
+                
+                const kills = form.elements[`${map}-kills`].value || 0;
+                const position = form.elements[`${map}-position`].value || 0;
+                const hintEl = document.getElementById(`hint-${map}`);
+                if(hintEl) {
+                    hintEl.textContent = `${calculatePoints(kills, position)} Pts`;
+                }
+
+                let total = 0;
+                document.querySelectorAll('#edit-points-form .p-3').forEach(mapDiv => {
+                    const mapName = mapDiv.querySelector('p.font-semibold').textContent;
+                    const k = form.elements[`${mapName}-kills`].value || 0;
+                    const p = form.elements[`${mapName}-position`].value || 0;
+                    total += calculatePoints(k, p);
+                });
+                document.getElementById('total-points-hint').textContent = `${total} Pts`;
             }
             
             async function handleCSSendPrizes(postId) {
@@ -1648,34 +2035,21 @@
                     return;
                 }
 
-                // Find the winning user's UID
-                let winnerUserId = null;
-                for (const p of Object.values(post.participants || {})) {
-                    const userTeam = window.dbData.users[p.userId]?.team;
-                    if (userTeam && userTeam.id === winner) {
-                        winnerUserId = p.userId;
-                        break;
-                    }
-                }
-                if (!winnerUserId) {
-                    showModal('error', 'Winner Not Found', 'Could not find the winning user in the participant list.');
-                    return;
-                }
-
                 showCustomModal({
                     type: 'success',
                     title: 'Confirm Finalization',
-                    message: 'This will distribute the prize to the winning team and mark the match as complete. This action cannot be undone.',
+                    message: 'This will finalize the CS match and make prizes available for winners to claim. This action cannot be undone.',
                     primaryButton: {
-                        text: 'Send Prize & Finalize',
+                        text: 'Finalize & Release Prizes',
                         onClick: async () => {
                             showLoader('Finalizing Match...');
                             const updates = {};
+                            
+                            const completedAtTime = new Date().toISOString();
+                           
                             let totalPrizesPaid = 0;
                             const prizeInfo = (post.details.winningPrizes || []).find(p => p.rank === 'Top 1');
-                            
                             if (prizeInfo && prizeInfo.prize > 0) {
-                                updates[`/users/${winnerUserId}/wallet/live`] = firebase.database.ServerValue.increment(prizeInfo.prize);
                                 totalPrizesPaid = prizeInfo.prize;
                             }
 
@@ -1683,13 +2057,30 @@
                             const profit = totalIncome - totalPrizesPaid;
                             
                             updates[`/posts/${postId}/status`] = 'completed';
-                            updates[`/posts/${postId}/completedAt`] = new Date().toISOString();
+                            updates[`/posts/${postId}/completedAt`] = completedAtTime;
+                            updates[`/posts/${postId}/prizesSent`] = true;
                             updates[`/posts/${postId}/profit`] = profit;
                             
+                            let winnerUserId = null;
+                            for (const p of Object.values(post.participants || {})) {
+                                const userTeam = window.dbData.users[p.userId]?.team;
+                                if (userTeam && userTeam.id == winner) {
+                                    winnerUserId = p.userId;
+                                    break;
+                                }
+                            }
+                            if (winnerUserId && prizeInfo && prizeInfo.prize > 0) {
+                                updates[`/posts/${postId}/winnings/${winnerUserId}`] = {
+                                    amount: prizeInfo.prize,
+                                    rank: 1,
+                                    claimed: false
+                                };
+                            }
+
                             try {
                                 await database.ref().update(updates);
                                 hideLoader();
-                                showModal('success', 'Prizes Sent!', 'The prize has been sent and the match is complete.', 'OK', () => {
+                                showModal('success', 'Match Finalized!', 'Prizes are now available for the winner to claim.', 'OK', () => {
                                     screens.sponsorLive.classList.add('hidden');
                                     navigateToPage('manage-posts-content');
                                 });
@@ -1702,8 +2093,7 @@
                     secondaryButton: { text: 'Cancel' }
                 });
             }
-
-
+            
             function handleSendPrizes(postId) {
                 const post = window.dbData.posts[postId];
                 if (post.details.matchType === 'Clash Squad') {
@@ -1711,78 +2101,71 @@
                     return;
                 }
 
-                // Existing Battle Royal Logic
                 showCustomModal({
                     type: 'success',
                     title: 'Confirm Finalization',
-                    message: 'Are you sure all results are correct? This will distribute prizes and cannot be undone.',
+                    message: 'Are you sure all results are correct? This will finalize the match and make prizes available for winners to claim. This action cannot be undone.',
                     primaryButton: {
-                        text: 'Yes, Finalize',
-                        onClick: () => {
+                        text: 'Yes, Finalize & Release Prizes',
+                        onClick: async () => {
                             if (!post) return;
             
-                            if (post.details.eventType === 'practice') {
-                                const updates = {};
-                                updates[`/posts/${postId}/status`] = 'completed';
-                                updates[`/posts/${postId}/completedAt`] = new Date().toISOString();
-                                const sponsor = currentUserData;
-                                updates[`/users/${auth.currentUser.uid}/analytics/giveawayMatches`] = (sponsor.analytics?.giveawayMatches || 0) + 1;
-                                
-                                database.ref().update(updates).then(() => {
-                                    showModal('success', 'Match Finalized', 'This practice match is now complete.');
-                                    if (!screens.sponsorLive.classList.contains('hidden')) {
-                                        screens.sponsorLive.classList.add('hidden');
-                                        delete screens.sponsorLive.dataset.postId;
-                                    }
-                                });
-                                return;
-                            }
-
                             const updates = {};
-                            let totalPrizesPaid = 0;
-                            const approvedResults = post.approvedResults || {};
+                            const completedAtTime = new Date().toISOString();
 
-                            const finalRankings = Object.values(post.participants || {}).map(p => {
-                                let totalPoints = 0;
-                                if (approvedResults[p.userId]) {
-                                    Object.values(approvedResults[p.userId]).forEach(mapResult => {
-                                        totalPoints += calculatePoints(mapResult.kills, mapResult.position);
-                                    });
-                                }
-                                return { userId: p.userId, totalPoints };
-                            }).sort((a, b) => b.totalPoints - a.totalPoints);
+                            updates[`/posts/${postId}/status`] = 'completed';
+                            updates[`/posts/${postId}/completedAt`] = completedAtTime;
+                            updates[`/posts/${postId}/prizesSent`] = true;
 
-                            (post.details.winningPrizes || []).forEach(prizeInfo => {
-                                const rankMatch = prizeInfo.rank.match(/Top (\d+)/);
-                                if (rankMatch) {
-                                    const rank = parseInt(rankMatch[1]);
-                                    if (!isNaN(rank) && finalRankings.length >= rank) {
-                                        const winnerUserId = finalRankings[rank - 1].userId;
-                                        const winnerUserData = window.dbData.users[winnerUserId];
-                                        if (winnerUserData) {
-                                            const newLiveBalance = (winnerUserData.wallet.live || 0) + prizeInfo.prize;
-                                            updates[`/users/${winnerUserId}/wallet/live`] = newLiveBalance;
-                                            totalPrizesPaid += prizeInfo.prize;
+                            if (post.details.eventType !== 'practice') {
+                                let totalPrizesPaid = 0;
+                                const finalRankings = Object.values(post.participants || {}).map(p => {
+                                    let totalPoints = 0;
+                                    if (post.approvedResults && post.approvedResults[p.userId]) {
+                                        Object.values(post.approvedResults[p.userId]).forEach(mapResult => {
+                                            totalPoints += calculatePoints(mapResult.kills, mapResult.position);
+                                        });
+                                    }
+                                    return { userId: p.userId, totalPoints };
+                                }).sort((a, b) => b.totalPoints - a.totalPoints);
+
+                                (post.details.winningPrizes || []).forEach(prizeInfo => {
+                                    const rankMatch = prizeInfo.rank.match(/Top (\d+)/);
+                                    if (rankMatch) {
+                                        const rank = parseInt(rankMatch[1]);
+                                        if (!isNaN(rank) && finalRankings.length >= rank) {
+                                            const winnerUserId = finalRankings[rank - 1].userId;
+                                            const prizeAmount = parseFloat(prizeInfo.prize);
+                                            if (winnerUserId && prizeAmount > 0) {
+                                                updates[`/posts/${postId}/winnings/${winnerUserId}`] = {
+                                                    amount: prizeAmount,
+                                                    rank: rank,
+                                                    claimed: false,
+                                                    points: finalRankings[rank - 1].totalPoints
+                                                };
+                                                totalPrizesPaid += prizeAmount;
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
 
-                            const totalIncome = (post.slots.booked || 0) * post.entryFee;
-                            const profit = totalIncome - totalPrizesPaid;
+                                const totalIncome = (post.slots.booked || 0) * post.entryFee;
+                                const profit = totalIncome - totalPrizesPaid;
+                                updates[`/posts/${postId}/profit`] = profit;
+                            } else {
+                                const sponsor = currentUserData;
+                                updates[`/users/${auth.currentUser.uid}/analytics/giveawayMatches`] = (sponsor.analytics?.giveawayMatches || 0) + 1;
+                            }
                             
-                            updates[`/posts/${postId}/status`] = 'completed';
-                            updates[`/posts/${postId}/completedAt`] = new Date().toISOString();
-                            updates[`/posts/${postId}/profit`] = profit;
-                            
-                            const sponsor = currentUserData;
-
-                            database.ref().update(updates).then(() => {
-                                showModal('success', 'Prizes Sent!', 'Prizes have been distributed and the match is now complete.', 'OK', () => {
+                            try {
+                                await database.ref().update(updates);
+                                showModal('success', 'Match Finalized!', 'Prizes are now available for winners to claim.', 'OK', () => {
                                     screens.sponsorLive.classList.add('hidden');
                                     navigateToPage('manage-posts-content');
                                 });
-                            }).catch(handleFirebaseError);
+                            } catch(err) {
+                                handleFirebaseError(err);
+                            }
                         }
                     },
                     secondaryButton: {
@@ -1796,7 +2179,6 @@
             async function showBanTeamModal(postId, userId, isMatchLive) { const post = window.dbData.posts[postId]; const user = window.dbData.users[userId]; if (!post || !user) return; const modalBox = document.getElementById('ban-team-modal-box'); let reasonFieldHTML = ''; if (isMatchLive) { reasonFieldHTML = `<div><label class="form-label">কারণ</label><select name="ban-reason-select" class="form-select" required><option value="">একটি কারণ নির্বাচন করুন</option><option value="Hacker">Hacker</option><option value="Team Up">Team Up</option><option value="Glitch User">Glitch User</option><option value="Rules Break">Rules Break</option></select></div>`; } else { reasonFieldHTML = `<div><label class="form-label">কারণ</label><input type="text" name="ban-reason-custom" class="form-input" placeholder="e.g., Team name mismatch" required></div>`; } modalBox.innerHTML = `<form id="ban-team-form" class="space-y-4"><h3 class="text-xl font-bold mb-2">Ban Team: ${user.team.name}</h3>${reasonFieldHTML}<div><label class="form-label">বিস্তারিত লিখুন (বাংলায়)</label><textarea name="ban-notice" class="form-textarea" rows="3" placeholder="এখানে বিস্তারিত লিখুন..." required></textarea></div><div><label class="form-label">প্রমাণ (ছবি)</label><input type="file" name="ban-screenshot" accept="image/*" class="text-sm w-full file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-white hover:file:bg-gray-800"></div><div><label class="form-label">প্রমাণ (ভিডিও লিঙ্ক)</label><input type="text" name="ban-video-link" class="form-input" placeholder="ভিডিও লিঙ্ক দিন (Google Drive, etc.)"></div><div class="flex gap-2 mt-4"><button type="button" id="close-ban-modal-btn" class="flex-1 py-2 bg-gray-600 rounded-lg">Cancel</button><button type="submit" class="flex-1 py-2 bg-red-600 rounded-lg">Confirm Ban</button></div></form>`; screens.banTeam.classList.remove('hidden'); modalBox.querySelector('#close-ban-modal-btn').addEventListener('click', () => screens.banTeam.classList.add('hidden')); modalBox.querySelector('#ban-team-form').addEventListener('submit', e => { e.preventDefault(); handleFormSubmit(e.target, 'Banning Team...', async () => { const form = e.target; const videoLink = form.elements['ban-video-link'].value; const uploadResult = await uploadImage(form.elements['ban-screenshot'].files[0], 'ban-evidence'); const screenshotDataUrl = uploadResult ? uploadResult.url : null; if (uploadResult) updateTotalStorage(uploadResult.size); const reason = isMatchLive ? form.elements['ban-reason-select'].value : form.elements['ban-reason-custom'].value; const notice = form.elements['ban-notice'].value; const fullReason = `${reason}: ${notice}`; const updates = {}; const mailId = Date.now(); updates[`/users/${userId}/mailbox/${mailId}`] = { id: mailId, postId: parseInt(postId), type: 'ban', subject: `You were banned from a match`, body: { reason: fullReason, screenshot: screenshotDataUrl, videoLink: videoLink, refunded: !isMatchLive }, timestamp: new Date().toISOString(), read: false, sponsorId: auth.currentUser.uid }; updates[`/users/${auth.currentUser.uid}/mailbox/${mailId}`] = { ...updates[`/users/${userId}/mailbox/${mailId}`], subject: `You banned ${user.team.name}`, type: 'ban_record' }; const bannedUsers = post.bannedUsers || []; if (!bannedUsers.includes(userId)) { bannedUsers.push(userId); } updates[`/posts/${postId}/bannedUsers`] = bannedUsers; const participantKey = Object.keys(post.participants || {}).find(key => post.participants[key].userId === userId); if (participantKey) { if (isMatchLive && post.entryFee > 0) { updates[`/users/${auth.currentUser.uid}/wallet/event`] = (currentUserData.wallet.event || 0) + post.entryFee; } else if (!isMatchLive) { updates[`/users/${userId}/wallet/live`] = (user.wallet.live || 0) + post.entryFee; updates[`/users/${auth.currentUser.uid}/wallet/event`] = (currentUserData.wallet.event || 0) - post.entryFee; } updates[`/posts/${postId}/participants/${participantKey}`] = null; updates[`/posts/${postId}/slots/booked`] = (post.slots.booked || 1) - 1; } await database.ref().update(updates); screens.banTeam.classList.add('hidden'); if (document.getElementById('participant-list-content')) { document.getElementById('participant-list-content').innerHTML = ''; } if (!screens.participants.classList.contains('hidden')) { screens.participants.classList.add('hidden'); } showModal('success', 'Team Banned', `${user.team.name} has been banned and notified.`); }); }); }
             function updateMailboxBadge() { const unreadCount = Object.values(currentUserData.mailbox || {}).filter(m => !m.read).length; const navItem = document.getElementById('nav-mailbox'); const badge = navItem.querySelector('.notification-badge'); if (unreadCount > 0) { if (badge) { badge.textContent = unreadCount; } else { navItem.innerHTML += `<div class="notification-badge">${unreadCount}</div>`; } } else { if (badge) badge.remove(); } }
             
-            // MODIFIED: Added delete button and functionality to renderMailbox
             function renderMailbox() {
                 const content = document.getElementById('mailbox-content');
                 const sortedMail = Object.values(currentUserData.mailbox || {}).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -1822,7 +2204,7 @@
                     const mailId = item.dataset.mailId;
                     if (!currentUserData.mailbox[mailId]?.read) {
                         item.addEventListener('click', (e) => {
-                            if (e.target.closest('.delete-mail-btn')) return; // Don't mark as read if delete is clicked
+                            if (e.target.closest('.delete-mail-btn')) return;
                             database.ref(`users/${auth.currentUser.uid}/mailbox/${mailId}/read`).set(true);
                         }, { once: true });
                     }
@@ -1845,7 +2227,14 @@
                 });
             }
             
-            function renderHistoryPage() { const historyContainer = document.getElementById('history-content'); const myPosts = Object.values(window.dbData.posts || {}).filter(p => p.authorId === auth.currentUser.uid && (p.status === 'completed' || p.status === 'cancelled')).sort((a,b) => b.timestamp - a.timestamp); let historyHTML = myPosts.map(post => createManagePostCardHTML(post)).join(''); historyContainer.innerHTML = `<div class="space-y-4">${historyHTML || '<p class="text-gray-500 text-center p-8">No event history found.</p>'}</div>`; }
+            function renderHistoryPage() { 
+                const historyContainer = document.getElementById('history-content'); 
+                const myPosts = Object.values(window.dbData.posts || {})
+                    .filter(p => p.authorId === auth.currentUser.uid && (p.status === 'completed' || p.status === 'cancelled'))
+                    .sort((a,b) => new Date(b.completedAt || b.cancelledAt || b.timestamp) - new Date(a.completedAt || a.cancelledAt || a.timestamp)); 
+                let historyHTML = myPosts.map(post => createManagePostCardHTML(post)).join(''); 
+                historyContainer.innerHTML = `<div class="space-y-4">${historyHTML || '<p class="text-gray-500 text-center p-8">No event history found.</p>'}</div>`; 
+            }
 
             function renderKycPage() {
                 const container = document.getElementById('kyc-content');
@@ -1957,83 +2346,122 @@
                 });
             }
             
-            // MODIFIED: Complete redesign of the Events & Earnings page
-            function renderEventsAndEarningsPage() {
+            function renderStatementPage() {
                 const container = document.getElementById('statement-content');
-                const myPosts = Object.values(window.dbData.posts || {}).filter(p => p.authorId === auth.currentUser.uid).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
-                const upcomingPosts = myPosts.filter(p => p.status === 'upcoming');
-                const livePosts = myPosts.filter(p => p.status.startsWith('live'));
+                container.innerHTML = `
+                    <div class="flex gap-2 mb-4 sticky top-[70px] bg-[#121212] py-2 z-10">
+                        <button class="tab-button statement-tab" data-target="events-section">Events</button>
+                        <button class="tab-button statement-tab" data-target="transactions-section">Transactions</button>
+                    </div>
+                    <div id="events-section" class="tab-content-section"></div>
+                    <div id="transactions-section" class="tab-content-section"></div>
+                `;
+                
+                renderEventsTab();
+                renderTransactionsTab();
+                setupTabs('statement-content', '.statement-tab', '.tab-content-section');
+            }
+
+            function renderEventsTab() {
+                const container = document.getElementById('events-section');
+                const myPosts = Object.values(window.dbData.posts || {}).filter(p => p.authorId === auth.currentUser.uid).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
                 const completedPosts = myPosts.filter(p => p.status === 'completed');
 
                 const createEventCard = (post) => {
+                    if (post.details.eventType === 'practice') return '';
                     const collectedFees = (post.slots.booked || 0) * post.entryFee;
-                    let bottomContent = '';
+                    let totalPrizePool = 0;
+                    (post.details.winningPrizes || []).forEach(p => totalPrizePool += p.prize);
+                    const creationFee = post.creationFee || 0;
+                    const profit = post.profit !== undefined ? post.profit : (collectedFees - totalPrizePool - creationFee);
+                    const profitColor = profit >= 0 ? 'text-green-400' : 'text-red-400';
+                    let transferHTML = '';
 
-                    if (post.details.eventType === 'practice') {
-                        return `<div class="statement-card p-4 rounded-lg space-y-2 border-orange-500">
-                                    <div class="flex justify-between items-center">
-                                        <p class="font-bold truncate">${post.details.eventName}</p>
-                                        <span class="text-xs font-bold bg-orange-500 text-white px-2 py-1 rounded-full">Practice</span>
-                                    </div>
-                                    <div class="flex justify-between text-sm">
-                                        <span class="text-gray-400">Participants: <strong class="text-white">${post.slots.booked || 0}/${post.slots.total}</strong></span>
-                                    </div>
-                                </div>`;
+                    if(post.profitTransferred) {
+                        transferHTML = `<p class="text-sm font-bold text-green-500">Transferred</p>`;
+                    } else if (post.profitLocked) {
+                         transferHTML = `<div class="text-center text-sm text-yellow-400"><i class="fa-solid fa-lock"></i><p>Locked</p></div>`;
+                    } else {
+                        const eligibilityTime = new Date(post.completedAt || post.timestamp).getTime() + (2 * 60 * 60 * 1000); // 2 hours
+                        if(Date.now() > eligibilityTime) {
+                            transferHTML = `<button class="text-white bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-lg text-xs font-bold transfer-profit-btn" data-post-id="${post.id}" data-profit="${profit}">Transfer</button>`;
+                        } else {
+                            transferHTML = `<div class="text-center"><p class="text-xs text-gray-500">Available in:</p><p class="font-bold text-yellow-400 profit-countdown" data-countdown-to="${eligibilityTime}">00:00:00</p></div>`;
+                        }
                     }
                     
-                    if (post.status === 'completed') {
-                        const profit = post.profit || 0;
-                        const profitColor = profit >= 0 ? 'text-green-400' : 'text-red-400';
-                        let transferHTML = '';
-                        if(post.profitTransferred) {
-                            transferHTML = `<p class="text-sm font-bold text-green-500">Transferred</p>`;
-                        } else if (post.profitLocked) {
-                             transferHTML = `<div class="text-center text-sm text-yellow-400"><i class="fa-solid fa-lock"></i><p>Locked</p></div>`;
-                        } else {
-                            const eligibilityTime = new Date(post.completedAt || post.timestamp).getTime() + (5 * 60 * 60 * 1000); // 5 hours
-                            if(Date.now() > eligibilityTime) {
-                                transferHTML = `<button class="text-white bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-lg text-xs font-bold transfer-profit-btn" data-post-id="${post.id}" data-profit="${profit}">Transfer to Live</button>`;
-                            } else {
-                                transferHTML = `<div class="text-center"><p class="text-xs text-gray-500">Available in:</p><p class="font-bold text-yellow-400 profit-countdown" data-countdown-to="${eligibilityTime}">00:00:00</p></div>`;
-                            }
-                        }
-                        bottomContent = `<div class="border-t border-gray-700 mt-3 pt-3 flex justify-between items-center">
+                    const bottomContent = `<div class="border-t border-gray-700 mt-3 pt-3 flex justify-between items-center">
                                             <div>
                                                 <p class="text-xs text-gray-400">Net Profit</p>
                                                 <p class="font-bold text-lg ${profitColor}">${profit.toFixed(2)} TK</p>
                                             </div>
                                             ${transferHTML}
                                         </div>`;
-                    }
 
                     return `<div class="statement-card p-4 rounded-lg space-y-2 border-green-500">
                                 <p class="font-bold truncate">${post.details.eventName}</p>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-400">Participants: <strong class="text-white">${post.slots.booked || 0}/${post.slots.total}</strong></span>
-                                    <span class="text-gray-400">Collected: <strong class="text-white">${collectedFees.toFixed(2)} TK</strong></span>
+                                <div class="grid grid-cols-2 gap-x-4 text-sm border-b border-gray-700 pb-2">
+                                    <span class="text-gray-400">Teams: <strong class="text-white">${post.slots.booked || 0}/${post.slots.total}</strong></span>
+                                    <span class="text-gray-400">Entry Fee: <strong class="text-white">${post.entryFee} TK</strong></span>
+                                    <span class="text-gray-400">Creation Fee: <strong class="text-red-400">-${creationFee.toFixed(2)} TK</strong></span>
+                                    <span class="text-gray-400">Collected: <strong class="text-green-400">+${collectedFees.toFixed(2)} TK</strong></span>
+                                    <span class="text-gray-400 col-span-2">Prize Pool: <strong class="text-red-400">-${totalPrizePool.toFixed(2)} TK</strong></span>
                                 </div>
                                 ${bottomContent}
                             </div>`;
                 };
 
-                container.innerHTML = `
-                    <div class="flex gap-2 mb-4 sticky top-[70px] bg-[#121212] py-2 z-10">
-                        <button class="tab-button statement-tab" data-target="completed-section">Completed</button>
-                        <button class="tab-button statement-tab" data-target="live-section">Live</button>
-                        <button class="tab-button statement-tab" data-target="upcoming-section">Upcoming</button>
-                    </div>
-                    <div id="completed-section" class="tab-content-section space-y-3">
-                        ${completedPosts.length > 0 ? completedPosts.map(createEventCard).join('') : '<p class="text-gray-500 text-center p-8">No completed events found.</p>'}
-                    </div>
-                    <div id="live-section" class="tab-content-section space-y-3">
-                        ${livePosts.length > 0 ? livePosts.map(createEventCard).join('') : '<p class="text-gray-500 text-center p-8">No events are currently live.</p>'}
-                    </div>
-                    <div id="upcoming-section" class="tab-content-section space-y-3">
-                        ${upcomingPosts.length > 0 ? upcomingPosts.map(createEventCard).join('') : '<p class="text-gray-500 text-center p-8">No upcoming events found.</p>'}
-                    </div>`;
+                container.innerHTML = `<div class="space-y-3">
+                    ${completedPosts.length > 0 ? completedPosts.map(createEventCard).join('') : '<p class="text-gray-500 text-center p-8">No completed events to show profit/loss from.</p>'}
+                </div>`;
+            }
 
-                setupTabs('statement-content', '.statement-tab', '.tab-content-section');
+            async function renderTransactionsTab() {
+                const container = document.getElementById('transactions-section');
+                container.innerHTML = `<div class="text-center p-8"><div class="spinner mx-auto"></div></div>`;
+
+                const txRef = database.ref(`users/${auth.currentUser.uid}/transactions`);
+                const depRef = database.ref('deposits').orderByChild('userId').equalTo(auth.currentUser.uid);
+                const withRef = database.ref('withdrawals').orderByChild('userId').equalTo(auth.currentUser.uid);
+
+                const [txSnap, depSnap, withSnap] = await Promise.all([txRef.once('value'), depSnap.once('value'), withSnap.once('value')]);
+
+                let allHistory = [];
+                txSnap.forEach(snap => allHistory.push({ ...snap.val(), source: 'tx' }));
+                depSnap.forEach(snap => allHistory.push({ ...snap.val(), source: 'dep', type: 'Deposit', description: `Deposit via ${snap.val().method}` }));
+                withSnap.forEach(snap => allHistory.push({ ...snap.val(), source: 'with', type: 'Withdrawal', description: `Withdrawal to ${snap.val().method}` }));
+
+                allHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                if (allHistory.length === 0) {
+                    container.innerHTML = `<p class="text-gray-500 text-center p-8">No transaction history found.</p>`;
+                    return;
+                }
+
+                const historyHTML = allHistory.map(item => {
+                    const amount = parseFloat(item.amount);
+                    const isCredit = item.source === 'dep' || (item.source === 'tx' && amount > 0);
+                    const amountColor = isCredit ? 'text-green-400' : 'text-red-400';
+                    const sign = isCredit ? '+' : '';
+                    
+                    let statusHTML = '';
+                    if (item.status === 'pending') statusHTML = `<span class="tx-status tx-status-pending">Pending</span>`;
+                    else if (item.status === 'approved' || item.status === 'completed') statusHTML = `<span class="tx-status tx-status-approved">Completed</span>`;
+                    else if (item.status === 'rejected') statusHTML = `<span class="tx-status tx-status-rejected">Rejected</span>`;
+
+                    return `<div class="bg-[#1e1e1e] border-l-4 ${isCredit ? 'border-green-500' : 'border-red-500'} rounded-r-lg p-3 flex justify-between items-center">
+                                <div>
+                                    <p class="font-semibold text-sm">${item.description}</p>
+                                    <p class="text-xs text-gray-400">${new Date(item.timestamp).toLocaleString()}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-lg ${amountColor}">${sign}${amount.toFixed(2)}</p>
+                                    ${statusHTML}
+                                </div>
+                            </div>`;
+                }).join('');
+                container.innerHTML = `<div class="space-y-2">${historyHTML}</div>`;
             }
 
             document.getElementById('statement-content').addEventListener('click', e => {
@@ -2045,14 +2473,23 @@
                     showCustomModal({
                         title: 'Confirm Transfer',
                         message: `Are you sure you want to transfer ${profit.toFixed(2)} TK profit to your Live Balance?`,
-                        primaryButton: { text: 'Confirm', onClick: async () => {
+                        primaryButton: { text: 'Confirm', noClose: true, onClick: async () => {
                             showLoader('Transferring...');
                             try {
                                 const updates = {};
                                 updates[`/posts/${postId}/profitTransferred`] = true;
                                 updates[`/users/${auth.currentUser.uid}/wallet/live`] = firebase.database.ServerValue.increment(profit);
                                 
+                                const transactionRef = database.ref(`users/${auth.currentUser.uid}/transactions`).push();
+                                updates[`/users/${auth.currentUser.uid}/transactions/${transactionRef.key}`] = {
+                                    id: transactionRef.key, type: 'Profit', description: `Profit from: ${window.dbData.posts[postId]?.details.eventName || 'match'}`,
+                                    amount: profit, status: 'completed', timestamp: new Date().toISOString()
+                                };
+                                
                                 await database.ref().update(updates);
+                                if (window.dbData.posts[postId]) window.dbData.posts[postId].profitTransferred = true;
+
+                                document.getElementById('modal-screen').classList.add('hidden');
                                 hideLoader();
                                 showModal('success', 'Transfer Successful', 'Profit has been added to your Live Balance.');
                             } catch(err) {
@@ -2065,49 +2502,6 @@
                 }
             });
         
-            function handleMarkAsDNP(postId, userId, mapName) {
-                showCustomModal({
-                    title: 'Confirm Action',
-                    message: `Are you sure you want to mark this team as "Did Not Play" for ${mapName}? This will assign them 0 points.`,
-                    primaryButton: {
-                        text: 'Yes, Mark DNP',
-                        onClick: () => {
-                            const dnpResult = { kills: 0, position: 0, dnp: true };
-                            database.ref(`/posts/${postId}/approvedResults/${userId}/${mapName}`).set(dnpResult)
-                            .then(() => renderSponsorTeamDetails(postId, userId));
-                        }
-                    },
-                    secondaryButton: { text: 'Cancel' }
-                });
-            }
-
-            function handleRejectResult(postId, userId, mapName) {
-                showCustomModal({
-                    type: 'error',
-                    title: 'Rejection Reason',
-                    message: `<p class="text-sm text-left mb-2">Why are you rejecting this submission for ${mapName}?</p><textarea id="rejection-reason" class="form-textarea" rows="3" placeholder="e.g., Wrong screenshot, invalid data..."></textarea>`,
-                    primaryButton: { text: 'Confirm Rejection', noClose: true, onClick: () => {
-                        const reason = document.getElementById('rejection-reason').value;
-                        if (!reason.trim()) { alert('A reason is required to reject a submission.'); return; }
-                        const updates = {};
-                        updates[`/posts/${postId}/results/${userId}/${mapName}`] = null; // This will "unlock" it
-                        const mailId = Date.now();
-                        updates[`/users/${userId}/mailbox/${mailId}`] = {
-                            id: mailId, postId: parseInt(postId), type: 'rejection', read: false,
-                            subject: 'Result Submission Rejected',
-                            body: { reason: `Your submission for map "${mapName}" was rejected. Reason: ${reason}. Please submit again.` },
-                            timestamp: new Date().toISOString()
-                        };
-                        database.ref().update(updates).then(() => {
-                            document.getElementById('modal-screen').classList.add('hidden');
-                            showModal('success', 'Submission Rejected', 'The user has been notified and can now re-submit their results.');
-                            renderSponsorTeamDetails(postId, userId); // Re-render the team details view
-                        });
-                    }},
-                    secondaryButton: { text: 'Cancel' }
-                });
-            }
-
             function checkFinalizeButtonState(postId) {
                 const post = window.dbData.posts[postId];
                 const sendPrizesBtn = document.getElementById('send-prizes-btn');
@@ -2115,7 +2509,6 @@
                 
                 const participantUserIds = Object.values(post.participants || {}).map(p => p.userId);
                 const approvedResults = post.approvedResults || {};
-                const numMaps = post.details.maps.length;
                 
                 let allResultsIn = true;
                 
@@ -2124,7 +2517,7 @@
                 } else {
                     for (const userId of participantUserIds) {
                         const userApprovedResults = approvedResults[userId] || {};
-                        if (Object.keys(userApprovedResults).length < numMaps) {
+                        if (Object.keys(userApprovedResults).length < post.details.maps.length) {
                             allResultsIn = false; 
                             break;
                         }
@@ -2133,9 +2526,9 @@
                 
                 sendPrizesBtn.disabled = !allResultsIn;
                 if (allResultsIn) {
-                    sendPrizesBtn.textContent = 'Send Prizes & Finalize';
+                    sendPrizesBtn.textContent = 'Finalize Match';
                 } else {
-                    sendPrizesBtn.textContent = 'Waiting for all approved results...';
+                    sendPrizesBtn.textContent = 'Waiting for all team results...';
                 }
             }
             function renderSponsorParticipantsTab(postId) { 
@@ -2245,13 +2638,11 @@
                 renderPaymentMethodSelection('withdraw');
             }
             
-            // MODIFIED: Added listener for new "Events & Earnings" button in wallet
             document.getElementById('wallet-content').addEventListener('click', e => {
                 if (e.target.closest('#deposit-btn')) startDepositFlow();
                 if (e.target.closest('#withdraw-btn')) startWithdrawFlow();
                 if (e.target.closest('#go-to-statement-btn')) {
                     navigateToPage('statement-content');
-                    setActiveNavItem(null); // Don't highlight a bottom nav item
                 }
             });
 
@@ -2263,7 +2654,6 @@
                 contentArea.querySelectorAll('.payment-method-btn').forEach(btn => { btn.addEventListener('click', () => { if (type === 'deposit') renderDepositForm(btn.dataset.methodKey); else if (type === 'withdraw') renderWithdrawForm(btn.dataset.methodKey); }); });
             }
 
-            // MODIFIED: Added animation class to logo and improved UI
             function renderDepositForm(methodKey) {
                 const method = paymentMethods[methodKey]; currentPaymentData = { type: 'deposit', method: method.name, methodKey };
                 const contentArea = document.getElementById('payment-content-area'); contentArea.scrollTop = 0;
@@ -2402,7 +2792,6 @@
                 showCustomModal({ type: 'success', title: 'Request Sent', message: 'Your withdrawal request has been submitted and will be processed within 24 hours.', primaryButton: { text: 'OK' } });
             }
 
-            // --- Account Settings Logic ---
             document.getElementById('change-name-form').addEventListener('submit', e => {
                 e.preventDefault();
                 const newName = document.getElementById('new-display-name').value.trim();
@@ -2488,7 +2877,6 @@
                             await user.reauthenticateWithCredential(credential);
                             await database.ref(`users/${user.uid}/status`).set('deleted');
                             await user.delete();
-                            // User is signed out automatically. onAuthStateChanged handles redirect.
                         } catch (error) {
                             hideLoader();
                             const message = error.code === 'auth/wrong-password' ? 'Incorrect password. Account not deleted.' : 'An error occurred during re-authentication.';
@@ -2516,17 +2904,14 @@
                                 const participantKey = Object.keys(post.participants || {}).find(key => post.participants[key].userId === userId);
                                 if (!participantKey) throw new Error("Participant not found.");
 
-                                // Remove participant and free up slot
                                 updates[`/posts/${postId}/participants/${participantKey}`] = null;
                                 updates[`/posts/${postId}/slots/booked`] = firebase.database.ServerValue.increment(-1);
 
-                                // Refund user and deduct from sponsor
                                 if (post.entryFee > 0) {
                                     updates[`/users/${userId}/wallet/live`] = firebase.database.ServerValue.increment(post.entryFee);
                                     updates[`/users/${auth.currentUser.uid}/wallet/event`] = firebase.database.ServerValue.increment(-post.entryFee);
                                 }
                                 
-                                // Send mail to user
                                 const mailId = Date.now();
                                 updates[`/users/${userId}/mailbox/${mailId}`] = {
                                     id: mailId, postId: parseInt(postId), type: 'kick', read: false,
@@ -2538,7 +2923,7 @@
                                 await database.ref().update(updates);
                                 showModal('success', 'Team Kicked', 'The team has been removed and their fee refunded.');
                                 if (!screens.participants.classList.contains('hidden')) {
-                                    showParticipantList(postId); // Refresh list
+                                    showParticipantList(postId);
                                 }
                             } catch (err) {
                                 handleFirebaseError(err);
@@ -2549,6 +2934,94 @@
                 });
             }
 
+            function handleRevertToUpcoming(postId) {
+                const post = window.dbData.posts[postId];
+                if (!post || !post.status.startsWith('live')) return;
+
+                const hasParticipants = post.participants && Object.keys(post.participants).length > 0;
+                let canRevert = false;
+                let message = 'This will change the match status back to "Upcoming". You will need to "Go Live" again later. Are you sure?';
+
+                if (hasParticipants) {
+                    const idPassTime = getGoLiveStatus(post).idPassTime;
+                    const thirtyMinBefore = idPassTime - (30 * 60 * 1000);
+                    if (Date.now() < thirtyMinBefore) {
+                        canRevert = true;
+                    } else {
+                        showModal('error', 'Cannot Revert', 'You can only revert a match with participants more than 30 minutes before the ID/Pass time.');
+                        return;
+                    }
+                } else {
+                    const deadline = new Date(post.matchDate).getTime() + (5 * 60 * 60 * 1000);
+                    if (Date.now() < deadline) {
+                        canRevert = true;
+                        message = 'This match has no participants. Reverting to "Upcoming" will allow new teams to join. Are you sure?';
+                    } else {
+                        showModal('error', 'Time Limit Exceeded', 'The 5-hour window to manage this empty match has passed.');
+                        return;
+                    }
+                }
+
+                if(canRevert) {
+                    showCustomModal({
+                        type: 'error',
+                        title: 'Revert to Upcoming?',
+                        message: message,
+                        primaryButton: {
+                            text: 'Yes, Revert',
+                            onClick: async () => {
+                                try {
+                                    await database.ref(`/posts/${postId}`).update({
+                                        status: 'upcoming',
+                                        roomId: null,
+                                        roomPass: null,
+                                        approvedResults: null,
+                                        csResults: null
+                                    });
+                                    showModal('success', 'Match Reverted', 'The match status is now "Upcoming".');
+                                } catch(err) {
+                                    handleFirebaseError(err);
+                                }
+                            }
+                        },
+                        secondaryButton: { text: 'Cancel' }
+                    });
+                }
+            }
+
+            async function cleanupOldHistory() {
+                const uid = auth.currentUser.uid;
+                if (!uid) return;
+                const sevenDaysAgoISO = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+                
+                // Cleanup old posts
+                try {
+                    const postsRef = database.ref('posts');
+                    const snapshot = await postsRef.orderByChild('authorId').equalTo(uid).once('value');
+                    if (snapshot.exists()) {
+                        const updates = {};
+                        snapshot.forEach(child => {
+                            const post = child.val();
+                            const postTimestamp = post.completedAt || post.cancelledAt;
+                            if ((post.status === 'completed' || post.status === 'cancelled') && postTimestamp && postTimestamp < sevenDaysAgoISO) {
+                                updates[child.key] = null;
+                            }
+                        });
+                        if (Object.keys(updates).length > 0) await postsRef.update(updates);
+                    }
+                } catch (error) { console.error("Error cleaning up old posts:", error); }
+
+                // Cleanup old transactions
+                try {
+                    const transactionsRef = database.ref(`users/${uid}/transactions`);
+                    const snapshot = await transactionsRef.orderByChild('timestamp').endAt(sevenDaysAgoISO).once('value');
+                    if (snapshot.exists()) {
+                        const updates = {};
+                        snapshot.forEach(child => { updates[child.key] = null; });
+                        await transactionsRef.update(updates);
+                    }
+                } catch (error) { console.error("Error cleaning up old transactions:", error); }
+            }
         });
     </script>
 </body>
