@@ -15,7 +15,7 @@
         .screen.hidden { opacity: 0; transform: scale(1.05); pointer-events: none; }
         .auth-view { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top: 0; left: 0; padding: 1rem; transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; opacity: 0; transform: scale(0.95); pointer-events: none; }
         .auth-view.active { opacity: 1; transform: scale(1); pointer-events: auto; }
-        #modal-screen, #forgot-password-modal, #id-pass-modal, #sponsor-live-view-screen, #participant-list-screen, #edit-points-modal, #ban-team-modal, #payment-screen, #loading-overlay, #badge-editor-modal { z-index: 100; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
+        #modal-screen, #forgot-password-modal, #id-pass-modal, #sponsor-live-view-screen, #participant-list-screen, #edit-points-modal, #ban-team-modal, #payment-screen, #loading-overlay, #badge-editor-modal, #chat-screen { z-index: 100; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
         .modal-box { background-color: #1e1e1e; border: 1px solid #2a2a2a; box-shadow: 0 10px 30px rgba(0,0,0,0.4); max-width: 420px; width: 90%; }
         .input-field { background-color: #121212; box-shadow: inset 6px 6px 12px #0c0c0c, inset -6px -6px 12px #1a1a1a; transition: box-shadow 0.2s ease; }
         .input-field:focus-within, .form-input:focus { box-shadow: inset 6px 6px 12px #0c0c0c, inset -6px -6px 12px #1a1a1a, 0 0 0 2px #1DB954 !important; outline: none; }
@@ -121,6 +121,25 @@
             font-size: 0.9rem;
             color: #a1a1aa;
         }
+        /* --- NEW CHAT STYLES --- */
+        #chat-screen { padding: 0; justify-content: start; }
+        #chat-header { position: sticky; top: 0; z-index: 10; }
+        #chat-messages { flex-grow: 1; overflow-y: auto; padding: 1rem; }
+        .chat-bubble { max-width: 80%; padding: 0.5rem 0.75rem; border-radius: 1rem; word-wrap: break-word; }
+        .chat-bubble-user { background-color: #3a3a3a; border-bottom-left-radius: 0.25rem; align-self: flex-start; }
+        .chat-bubble-reply { background-color: #1e3a8a; border-bottom-right-radius: 0.25rem; align-self: flex-end; }
+        .chat-bubble-announcement { background: linear-gradient(to right, #b91c1c, #7f1d1d); border-radius: 0.5rem; align-self: center; text-align: center; max-width: 100%; }
+        .chat-message-container { position: relative; }
+        .reply-btn-container { position: absolute; top: 50%; transform: translateY(-50%); right: -2.5rem; }
+        #chat-replying-to { background-color: #2a2a2a; padding: 0.5rem 1rem; border-top: 1px solid #444; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4a4a52; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; }
+        input:checked + .slider { background-color: #ef4444; }
+        input:checked + .slider:before { transform: translateX(22px); }
+        .slider.round { border-radius: 34px; }
+        .slider.round:before { border-radius: 50%; }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -432,6 +451,10 @@
         </header>
         <div id="payment-content-area" class="w-full h-full bg-[#121212] text-white overflow-y-auto no-scrollbar relative p-4 md:p-6"></div>
     </div>
+    <!-- NEW: Chat Screen -->
+    <div id="chat-screen" class="screen hidden !p-0 justify-start">
+        <!-- Content will be injected by JS -->
+    </div>
 
 
     <!-- Modals -->
@@ -632,7 +655,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), idpass: document.getElementById('id-pass-modal'), sponsorLive: document.getElementById('sponsor-live-view-screen'), participants: document.getElementById('participant-list-screen'), editPoints: document.getElementById('edit-points-modal'), banTeam: document.getElementById('ban-team-modal'), payment: document.getElementById('payment-screen') };
+            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), idpass: document.getElementById('id-pass-modal'), sponsorLive: document.getElementById('sponsor-live-view-screen'), participants: document.getElementById('participant-list-screen'), editPoints: document.getElementById('edit-points-modal'), banTeam: document.getElementById('ban-team-modal'), payment: document.getElementById('payment-screen'), chat: document.getElementById('chat-screen') };
             const authViews = { login: document.getElementById('login-view'), signup: document.getElementById('signup-view') };
             let isInitialAuthCheck = true, currentUserData = null;
             
@@ -694,6 +717,7 @@
                                     navigateToPage('manage-posts-content', true);
                                     checkTimedEvents();
                                     setInterval(updateAllTimers, 1000);
+                                    checkChatDeletionQueue(); // Check for chats to delete on app start
                                 }, 50);
                             });
                         }
@@ -702,8 +726,14 @@
                         const currentPage = document.querySelector('.dashboard-page:not(.hidden)');
                         const liveViewScreen = document.getElementById('sponsor-live-view-screen');
                         const participantsScreen = document.getElementById('participant-list-screen');
+                        const chatScreen = document.getElementById('chat-screen');
                         
-                        if (liveViewScreen && !liveViewScreen.classList.contains('hidden')) {
+                        if (chatScreen && !chatScreen.classList.contains('hidden')) {
+                             const postId = chatScreen.dataset.postId;
+                             if (postId) {
+                                 // Chat screen might need real-time updates too, handled inside its own render function
+                             }
+                        } else if (liveViewScreen && !liveViewScreen.classList.contains('hidden')) {
                             const postId = liveViewScreen.dataset.postId;
                             const post = window.dbData.posts[postId];
                             const activeTabTarget = document.querySelector('#sponsor-live-view-content .active-tab')?.dataset.target;
@@ -1046,6 +1076,14 @@
                         const postId = Date.now();
                         const newPost = { ...postData, id: postId, timestamp: new Date().toISOString(), slots: { booked: 0, total: parseInt(document.getElementById('post-total-slots').value) }, status: 'upcoming' };
                         updates['/posts/' + postId] = newPost;
+
+                        // Create chat room metadata
+                        updates[`/matchChats/${postId}/metadata`] = {
+                            sponsorId: auth.currentUser.uid,
+                            matchName: eventName,
+                            createdAt: firebase.database.ServerValue.TIMESTAMP
+                        };
+
                         if(totalDeductionFromLive > 0) {
                             updates[`/users/${auth.currentUser.uid}/wallet/live`] = sponsorLiveBalance - totalDeductionFromLive;
                         }
@@ -1465,6 +1503,7 @@
                                 showLoader('Deleting...');
                                 const updates = {};
                                 updates[`/posts/${postId}`] = null;
+                                updates[`/matchChats/${postId}`] = null; // Also delete chat room
                                 if (refundAmount > 0) {
                                     updates[`/users/${auth.currentUser.uid}/wallet/live`] = firebase.database.ServerValue.increment(refundAmount);
                                     
@@ -1828,7 +1867,23 @@
                                         <button id="send-prizes-btn" class="flex-1 py-3 action-button rounded-lg text-lg">Finalize</button>
                                     </div>`; 
                 } 
-                content.innerHTML = `<div class="sticky top-0 bg-[#121212]/80 backdrop-blur-md py-4 px-4 flex justify-between items-center z-10"><h2 class="text-2xl font-bold">${post.details.eventName}</h2><button id="close-sponsor-view-btn" class="text-gray-400 text-3xl">&times;</button></div>${emptyMatchTimerHTML}<div class="flex gap-2 mb-4 px-4"><button class="tab-button sponsor-view-tab" data-target="sponsor-manage-content">Manage</button><button class="tab-button sponsor-view-tab" data-target="sponsor-participants-content">Participants</button><button class="tab-button sponsor-view-tab" data-target="sponsor-leaderboard-content">Leaderboard</button></div><div class="px-4 pb-24 overflow-y-auto h-[calc(100%-120px)] no-scrollbar"><div id="sponsor-manage-content" class="tab-content-section"></div><div id="sponsor-participants-content" class="tab-content-section"></div><div id="sponsor-leaderboard-content" class="tab-content-section"></div></div>${bottomButtons}`; 
+                content.innerHTML = `<header id="chat-header" class="premium-header py-3 px-4 flex justify-between items-center sticky top-0 z-10">
+                                        <button id="close-sponsor-view-btn" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-left"></i></button>
+                                        <h2 class="text-lg font-bold truncate">${post.details.eventName}</h2>
+                                        <button id="open-chat-btn" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-comments"></i></button>
+                                    </header>
+                                    ${emptyMatchTimerHTML}
+                                    <div class="flex gap-2 mb-4 px-4 mt-2">
+                                        <button class="tab-button sponsor-view-tab" data-target="sponsor-manage-content">Manage</button>
+                                        <button class="tab-button sponsor-view-tab" data-target="sponsor-participants-content">Participants</button>
+                                        <button class="tab-button sponsor-view-tab" data-target="sponsor-leaderboard-content">Leaderboard</button>
+                                    </div>
+                                    <div class="px-4 pb-24 overflow-y-auto h-[calc(100%-120px)] no-scrollbar">
+                                        <div id="sponsor-manage-content" class="tab-content-section"></div>
+                                        <div id="sponsor-participants-content" class="tab-content-section"></div>
+                                        <div id="sponsor-leaderboard-content" class="tab-content-section"></div>
+                                    </div>
+                                    ${bottomButtons}`; 
                 
                 renderSponsorManageTab(postId); 
                 renderSponsorParticipantsTab(postId); 
@@ -1857,6 +1912,7 @@
                     if(revertBtn) {
                         revertBtn.addEventListener('click', () => handleRevertToUpcoming(postId));
                     }
+                    content.querySelector('#open-chat-btn')?.addEventListener('click', () => renderChatScreen(postId));
                 } 
             }
             
@@ -2046,6 +2102,7 @@
                             const updates = {};
                             
                             const completedAtTime = new Date().toISOString();
+                            const deletionTime = Date.now() + (2 * 60 * 60 * 1000); // 2 hours from now
                            
                             let totalPrizesPaid = 0;
                             const prizeInfo = (post.details.winningPrizes || []).find(p => p.rank === 'Top 1');
@@ -2060,6 +2117,7 @@
                             updates[`/posts/${postId}/completedAt`] = completedAtTime;
                             updates[`/posts/${postId}/prizesSent`] = true;
                             updates[`/posts/${postId}/profit`] = profit;
+                            updates[`/chatDeletionQueue/${postId}`] = deletionTime;
                             
                             let winnerUserId = null;
                             for (const p of Object.values(post.participants || {})) {
@@ -2112,10 +2170,12 @@
             
                             const updates = {};
                             const completedAtTime = new Date().toISOString();
+                            const deletionTime = Date.now() + (2 * 60 * 60 * 1000); // 2 hours from now
 
                             updates[`/posts/${postId}/status`] = 'completed';
                             updates[`/posts/${postId}/completedAt`] = completedAtTime;
                             updates[`/posts/${postId}/prizesSent`] = true;
+                            updates[`/chatDeletionQueue/${postId}`] = deletionTime;
 
                             if (post.details.eventType !== 'practice') {
                                 let totalPrizesPaid = 0;
@@ -2668,7 +2728,7 @@
                         <p class="text-sm text-gray-300">Use your ${method.name} app to <strong>${method.type}</strong> to the number below.</p>
                         <div class="bg-black/30 p-3 rounded-lg flex justify-between items-center">
                             <code class="text-xl font-bold tracking-wider">${method.number}</code>
-                            <button id="copy-payment-number-btn" class="bg-gray-600 hover:bg-gray-700 w-10 h-10 rounded-md flex items-center justify-center"><i class="fa-solid fa-copy"></i></button>
+                            <button id="copy-payment-number-btn" class="bg-gray-600 hover:bg-gray-500 w-10 h-10 rounded-md flex items-center justify-center"><i class="fa-solid fa-copy"></i></button>
                         </div>
                     </div>
                     <div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-4 space-y-4">
