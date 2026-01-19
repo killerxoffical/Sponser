@@ -23,7 +23,7 @@
         .action-button:hover:not(:disabled), .manage-btn:hover { box-shadow: 10px 10px 20px #0d0d0d, -10px -10px 20px #252525; transform: translateY(-2px); }
         .action-button:active:not(:disabled), .manage-btn:active { box-shadow: inset 6px 6px 12px #158a3f, inset -6px -6px 12px #27e869; transform: translateY(1px); }
         .action-button:disabled { background: #555; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
-        main { background: #121212; padding-bottom: 90px !important; }
+        main { background: #000; padding-bottom: 90px !important; }
         .spinner { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #ffffff; width: 18px; height: 18px; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .password-toggle { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #9ca3af; }
@@ -31,14 +31,13 @@
         #splash-screen-lottie.fade-out { opacity: 0; transform: scale(0.8); }
         #splash-screen-logo { opacity: 0; transform: scale(0.8); }
         #splash-screen-logo.fade-in { opacity: 1; transform: scale(1); }
-        .nav-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 500px; z-index: 50; }
-        .nav-bar { position: relative; display: flex; justify-content: space-around; align-items: center; background-color: #212124; padding: 8px; border-radius: 9999px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
-        .nav-item { display: flex; align-items: center; justify-content: center; padding: 12px 16px; cursor: pointer; color: #a1a1aa; position: relative; z-index: 10; transition: color 0.3s ease-out; border-radius: 9999px; flex: 1; }
-        .nav-item .nav-icon { font-size: 20px; transition: color 0.3s ease-out; }
-        .nav-item .nav-label { font-weight: 600; font-size: 14px; white-space: nowrap; margin-left: 0; max-width: 0; opacity: 0; overflow: hidden; transition: max-width 0.3s ease-out, opacity 0.2s 0.1s ease-out, margin-left 0.3s ease-out; }
-        .nav-item.active { color: #212124; }
-        .nav-item.active .nav-label { max-width: 100px; opacity: 1; margin-left: 10px; }
-        #nav-indicator { position: absolute; top: 8px; height: calc(100% - 16px); background-color: #ffffff; border-radius: 9999px; z-index: 5; transition: all 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        .nav-container { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 200; background-color: rgba(18, 18, 18, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); padding-bottom: env(safe-area-inset-bottom); }
+        .nav-bar { position: relative; display: flex; justify-content: space-around; align-items: center; background-color: transparent; padding: 2px 0; height: 56px; box-shadow: none; border: none; border-radius: 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px; cursor: pointer; color: #71717a; position: relative; z-index: 10; transition: all 0.3s ease; flex: 1; }
+        .nav-item .nav-icon { font-size: 18px; margin-bottom: 2px; transition: all 0.3s ease; }
+        .nav-item .nav-label { font-size: 10px; font-weight: 500; opacity: 1; max-width: none; margin-left: 0; white-space: nowrap; }
+        .nav-item.active { color: #1DB954; }
+        #nav-indicator { display: none !important; }
         .form-section { background: #1e1e1e; border: 1px solid #2a2a2a; }
         .form-label { color: #a1a1aa; font-size: 0.8rem; margin-bottom: 0.5rem; font-weight: 600; }
         .form-input, .form-select, .form-textarea { background: #121212; border: 1px solid #333; color: white; padding: 0.75rem; border-radius: 0.5rem; width: 100%; transition: border-color 0.2s; }
@@ -75,7 +74,7 @@
         input[name="event-type"]:checked + .event-type-card { border-color: #1DB954; background-color: #1e1e1e; transform: scale(1.05); }
         .event-type-card.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
         .statement-card { background: #1e1e1e; border-left: 4px solid; }
-        .premium-header { background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 24px 24px; }
+        .premium-header { background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid #2a2a2a; padding-top: 0.5rem; padding-bottom: 0.5rem; }
         .header-back-btn { background-color: rgba(255, 255, 255, 0.1); }
         #profile-content { background: radial-gradient(circle, #1e1e1e 0%, #121212 100%); }
         .setting-item { background-color: #2a2a2a; border-radius: 0.75rem; padding: 1.1rem 1rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background-color 0.2s, transform 0.2s; border: 1px solid #3a3a3a; width: 100%; }
@@ -98,29 +97,12 @@
         .tx-status-pending { background-color: #eab308; color: black; }
         .tx-status-approved { background-color: #22c55e; color: white; }
         .tx-status-rejected { background-color: #ef4444; color: white; }
-        .deposit-logo-animated {
-            border-radius: 1.5rem;
-            animation: float-effect 3s ease-in-out infinite;
-        }
-        @keyframes float-effect {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-        .leaderboard-item-wrapper .edit-points-btn {
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-        }
-        .leaderboard-item-wrapper:hover .edit-points-btn {
-            opacity: 1;
-        }
-        #edit-points-modal-box .form-input {
-            text-align: center;
-            font-weight: bold;
-        }
-        #edit-points-modal-box .form-label {
-            font-size: 0.9rem;
-            color: #a1a1aa;
-        }
+        .deposit-logo-animated { border-radius: 1.5rem; animation: float-effect 3s ease-in-out infinite; }
+        @keyframes float-effect { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .leaderboard-item-wrapper .edit-points-btn { opacity: 0; transition: opacity 0.2s ease-in-out; }
+        .leaderboard-item-wrapper:hover .edit-points-btn { opacity: 1; }
+        #edit-points-modal-box .form-input { text-align: center; font-weight: bold; }
+        #edit-points-modal-box .form-label { font-size: 0.9rem; color: #a1a1aa; }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -143,51 +125,54 @@
     <div id="dashboard-screen" class="screen hidden p-0 justify-start">
         <main class="w-full h-full text-white overflow-y-auto no-scrollbar">
             <!-- Headers -->
-            <header id="main-header" class="sticky top-0 z-40 bg-[#1e1e1e]/80 backdrop-blur-md border-b border-gray-800 p-3 flex justify-between items-center gap-2 rounded-b-2xl">
+            <header id="main-header" class="sticky top-0 z-40 bg-black/90 backdrop-blur-sm border-b border-gray-800 px-3 py-2 flex justify-between items-center gap-2">
                 <div class="flex items-center gap-3">
                     <img id="header-user-avatar" src="" class="w-10 h-10 rounded-full border-2 border-gray-700 object-cover">
                     <div><h2 id="header-user-name" class="font-bold text-white flex items-center"></h2></div>
                 </div>
-                <div id="wallet-button" class="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-full p-2 px-4 flex items-center gap-3 cursor-pointer hover:border-green-500 transition-all duration-300">
-                    <i class="fa-solid fa-wallet text-xl text-green-400"></i>
-                    <div>
-                        <p class="text-sm font-bold text-white font-oswald tracking-wider"><span id="header-wallet-balance">0.00</span> <span class="text-xs font-normal text-gray-300">TK</span></p>
-                        <p class="text-[10px] text-gray-400 -mt-1 uppercase">Live Balance</p>
+                <div id="wallet-button" class="bg-gray-800/50 border border-gray-700 rounded-full py-1 px-3 flex items-center gap-2 cursor-pointer hover:border-green-500 transition-all duration-300">
+                    <i class="fa-solid fa-wallet text-lg text-green-400"></i>
+                    <div class="text-left">
+                        <p class="text-sm font-bold text-white font-oswald tracking-wider leading-none"><span id="header-wallet-balance">0.00</span> TK</p>
+                        <p class="text-[9px] text-gray-400 uppercase font-semibold">Live Balance</p>
                     </div>
                 </div>
             </header>
-            <header id="add-post-header" class="hidden sticky top-0 z-40 bg-[#1e1e1e]/80 backdrop-blur-md border-b border-gray-800 p-4 text-center rounded-b-2xl">
-                <h2 class="text-xl font-bold">Create New Match Post</h2>
+            <header id="add-post-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
+                <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 class="text-lg font-bold">Create New Match</h2>
+                <div class="w-10"></div>
             </header>
-            <header id="manage-posts-header" class="hidden sticky top-0 z-40 bg-[#1e1e1e]/80 backdrop-blur-md border-b border-gray-800 p-4 flex justify-between items-center rounded-b-2xl">
-                <h2 class="text-xl font-bold">Manage Your Posts</h2>
-                <button id="header-create-post-btn" class="bg-green-600 hover:bg-green-500 w-10 h-10 rounded-full flex items-center justify-center transition-transform hover:scale-110">
-                    <i class="fa-solid fa-plus text-xl"></i>
+            <header id="manage-posts-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
+                <div class="w-10"></div>
+                <h2 class="text-lg font-bold">Manage Events</h2>
+                <button id="header-create-post-btn" class="text-xl text-gray-300 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10">
+                    <i class="fa-solid fa-plus"></i>
                 </button>
             </header>
              <header id="history-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
                 <button id="back-to-profile-btn" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Event History</h2>
+                <h2 class="text-lg font-bold">Event History</h2>
                 <div class="w-10"></div>
             </header>
             <header id="kyc-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
                 <button class="back-to-profile-from-subpage header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Organizer Verification</h2>
+                <h2 class="text-lg font-bold">Organizer Verification</h2>
                 <div class="w-10"></div>
             </header>
             <header id="statement-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
                 <button class="back-to-profile-from-subpage header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Statement</h2>
+                <h2 class="text-lg font-bold">Statement</h2>
                 <div class="w-10"></div>
             </header>
              <header id="feedback-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
                 <button class="back-to-profile-from-subpage header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">User Feedbacks</h2>
+                <h2 class="text-lg font-bold">User Feedbacks</h2>
                 <div class="w-10"></div>
             </header>
             <header id="account-settings-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
                 <button class="back-to-profile-from-subpage header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Account Settings</h2>
+                <h2 class="text-lg font-bold">Account Settings</h2>
                 <div class="w-10"></div>
             </header>
 
@@ -199,7 +184,7 @@
                         <div class="form-section p-4 rounded-xl space-y-4">
                             <div>
                                 <label class="form-label">Event Type (Creation Fee Applies)</label>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <label>
                                         <input type="radio" name="event-type" value="paid" class="hidden" checked>
                                         <div class="event-type-card p-3 rounded-lg text-center cursor-pointer">
@@ -216,14 +201,6 @@
                                             <p class="text-xs text-gray-400" id="practice-fee-text">Fee: 5 TK</p>
                                         </div>
                                     </label>
-                                    <label>
-                                        <input type="radio" name="event-type" value="promotion" class="hidden" disabled>
-                                        <div class="event-type-card disabled p-3 rounded-lg text-center cursor-pointer relative">
-                                            <i class="fa-solid fa-bullhorn text-2xl text-blue-400"></i>
-                                            <p class="font-bold mt-1">Promotion</p>
-                                             <span class="absolute top-1 right-1 text-[9px] bg-gray-500 px-1.5 py-0.5 rounded-full">Only Officials</span>
-                                        </div>
-                                    </label>
                                 </div>
                             </div>
                             <div><label for="post-event-name" class="form-label">Event Name</label><input id="post-event-name" type="text" placeholder="Enter your Event name" class="form-input" required></div>
@@ -232,10 +209,14 @@
                         <div class="form-section p-4 rounded-xl space-y-4">
                             <div class="grid grid-cols-2 gap-4">
                                 <div><label for="post-battle-type" class="form-label">Battle Type</label><select id="post-battle-type" class="form-select"><option value="Battle Royal">Battle Royal</option><option value="Clash Squad">Clash Squad</option></select></div>
-                                <div><label for="post-team-type" class="form-label">Team Type</label><select id="post-team-type" class="form-select"><option value="Squad">Squad</option><option value="Duo">Duo</option><option value="Solo">Solo</option></select></div>
+                                <div><label for="post-team-type" class="form-label">Team Type</label><select id="post-team-type" class="form-select"><option value="Squad">Squad</option><option value="Solo">Solo</option></select></div>
                             </div>
                             <div><label for="post-total-slots" class="form-label">Total Slots</label><input id="post-total-slots" type="number" class="form-input bg-gray-800" readonly></div>
                             <div id="entry-fee-container"><label for="post-entry-fee" class="form-label">Entry Fee (TK)</label><input id="post-entry-fee" type="number" placeholder="e.g., 35" class="form-input" required></div>
+                        </div>
+                        <div id="per-kill-prize-container" class="form-section p-4 rounded-xl space-y-4 hidden">
+                            <label for="post-per-kill-prize" class="form-label">Per Kill Prize (TK) - Optional</label>
+                            <input id="post-per-kill-prize" type="number" placeholder="e.g., 5" class="form-input">
                         </div>
                         <div class="form-section p-4 rounded-xl space-y-4">
                             <div class="grid grid-cols-2 gap-4">
@@ -406,9 +387,8 @@
             </div>
         </main>
         
-        <div class="nav-container">
+        <div class="nav-container hidden">
              <nav class="nav-bar">
-                <div id="nav-indicator"></div>
                 <a href="#" id="nav-manage-posts" class="nav-item active"><i class="fa-solid fa-tasks nav-icon"></i><span class="nav-label">Manage</span></a>
                 <a href="#" id="nav-wallet" class="nav-item"><i class="fa-solid fa-wallet nav-icon"></i><span class="nav-label">Wallet</span></a>
                 <a href="#" id="nav-statement" class="nav-item"><i class="fa-solid fa-chart-line nav-icon"></i><span class="nav-label">Statement</span></a>
@@ -688,6 +668,7 @@
                              cleanupOldHistory();
                              runSplashAnimation(() => {
                                 screens.dashboard.classList.remove('hidden');
+                                document.querySelector('.nav-container').classList.remove('hidden');
                                 setTimeout(() => {
                                     setActiveNavItem(document.getElementById('nav-manage-posts'));
                                     navigateToPage('manage-posts-content', true);
@@ -742,6 +723,7 @@
                 } else {
                     isInitialAuthCheck = false;
                     Object.values(screens).forEach(s => s.classList.add('hidden'));
+                    document.querySelector('.nav-container').classList.add('hidden');
                     screens.splash.classList.remove('hidden');
                     startAuthFlow();
                 }
@@ -883,7 +865,7 @@
                     slots = 2;
                     prizeRanks = ['Top 1'];
                 } else {
-                    if (teamType === 'Solo') { slots = 48; } else if (teamType === 'Duo') { slots = 24; } else { slots = 12; }
+                    if (teamType === 'Solo') { slots = 48; } else { slots = 12; } // Duo removed
                     prizeRanks = Array.from({ length: slots }, (_, i) => `Top ${i + 1}`);
                 }
                 
@@ -893,6 +875,8 @@
                     const id = prize.replace(/\s+/g, '-').toLowerCase();
                     prizeContainer.innerHTML += `<div class="prize-checkbox bg-gray-800 p-2 rounded-md"><label for="prize-${id}" class="flex items-center cursor-pointer"><input type="checkbox" id="prize-${id}" class="hidden" data-prize-name="${prize}"><div class="w-5 h-5 border-2 border-gray-500 rounded-sm mr-3 flex-shrink-0 flex items-center justify-center"><i class="fa-solid fa-check text-white hidden"></i></div><span>${prize}</span></label><div class="prize-input-container"><input type="number" placeholder="Prize Amount (TK)" class="form-input text-sm p-2 w-full"></div></div>`;
                 });
+
+                document.getElementById('per-kill-prize-container').classList.toggle('hidden', teamType !== 'Solo' || battleType !== 'Battle Royal');
             }
 
             function updateFormForMatchType() {
@@ -915,7 +899,7 @@
                 } else {
                     document.getElementById('paid-fee-text').textContent = "Fee: 10 TK";
                     document.getElementById('practice-fee-text').textContent = "Fee: 5 TK";
-                    teamTypeContainer.innerHTML = `<option value="Squad">Squad</option><option value="Duo">Duo</option><option value="Solo">Solo</option>`;
+                    teamTypeContainer.innerHTML = `<option value="Squad">Squad</option><option value="Solo">Solo</option>`; // Duo removed
                     numMatchesContainer.style.display = 'block';
                     mapSelectionContainer.style.display = 'block';
                 }
@@ -927,9 +911,9 @@
                 
                 if (isPractice) { 
                     document.getElementById('post-entry-fee').value = 0;
-                    // Uncheck all prize boxes when switching to practice
+                    document.getElementById('post-per-kill-prize').value = '';
                     document.querySelectorAll('#prize-options-container input[type="checkbox"]:checked').forEach(cb => {
-                        cb.click(); // Simulate a click to uncheck and hide the input
+                        cb.click();
                     });
                 }
 
@@ -948,59 +932,36 @@
                 e.preventDefault();
                 const form = e.target;
                 handleFormSubmit(form, 'Creating Post...', async () => {
-                    // Time validation start
                     const matchDateVal = document.getElementById('post-match-date').value;
                     const matchStartTimeVal = document.getElementById('post-matchstart-time').value;
-                    if (!matchDateVal || !matchStartTimeVal) {
-                        throw new Error("Please select a valid match date and start time.");
-                    }
+                    if (!matchDateVal || !matchStartTimeVal) throw new Error("Please select a valid match date and start time.");
                     const matchStartFullDate = new Date(`${matchDateVal}T${matchStartTimeVal}`);
                     const now = new Date();
                     const twoHoursFromNow = new Date(now.getTime() + (2 * 60 * 60 * 1000));
-            
-                    if (matchStartFullDate < twoHoursFromNow) {
-                        throw new Error("Match start time must be at least 2 hours from the current time.");
-                    }
-                    // Time validation end
+                    if (matchStartFullDate < twoHoursFromNow) throw new Error("Match start time must be at least 2 hours from the current time.");
 
                     const editingPostId = document.getElementById('editing-post-id').value;
                     const postImageFile = document.getElementById('post-image-upload').files[0];
-                    
                     const eventType = document.querySelector('input[name="event-type"]:checked').value;
                     const battleType = document.getElementById('post-battle-type').value;
 
                     let creationFee = 0;
                     if (!editingPostId) {
-                        if (battleType === 'Clash Squad') {
-                            creationFee = (eventType === 'paid') ? 7 : 4;
-                        } else {
-                            creationFee = (eventType === 'paid') ? 10 : 5;
-                        }
+                        creationFee = (battleType === 'Clash Squad') ? (eventType === 'paid' ? 7 : 4) : (eventType === 'paid' ? 10 : 5);
                     }
                     
-                    let imageInfo = {
-                        url: editingPostId ? (window.dbData.posts[editingPostId]?.imageUrl || null) : null,
-                        size: editingPostId ? (window.dbData.posts[editingPostId]?.imageSizeKB || 0) : 0
-                    };
-                    const oldSize = imageInfo.size;
-    
+                    let imageInfo = { url: editingPostId ? (window.dbData.posts[editingPostId]?.imageUrl || null) : null, size: editingPostId ? (window.dbData.posts[editingPostId]?.imageSizeKB || 0) : 0 };
                     if (postImageFile) {
                         const uploadResult = await uploadImage(postImageFile, 'post-images');
-                        if (!uploadResult) {
-                           throw new Error("Image upload failed.");
-                        }
-                        imageInfo.url = uploadResult.url;
-                        imageInfo.size = uploadResult.size;
+                        if (!uploadResult) throw new Error("Image upload failed.");
+                        imageInfo = uploadResult;
                     }
-    
-                    if (!imageInfo.url) {
-                        throw new Error("Please upload a post image.");
-                    }
-                    const sizeDifference = imageInfo.size - oldSize;
+                    if (!imageInfo.url) throw new Error("Please upload a post image.");
                     
                     let winningPrizes = []; 
                     let totalPrizePool = 0;
                     let entryFee = parseInt(document.getElementById('post-entry-fee').value) || 0;
+                    const perKillPrize = parseFloat(document.getElementById('post-per-kill-prize').value) || 0;
     
                     if (eventType === 'paid') {
                         document.querySelectorAll('#prize-options-container input[type="checkbox"]:checked').forEach(cb => { 
@@ -1010,19 +971,22 @@
                                 totalPrizePool += amount; 
                             } 
                         });
-                        if (winningPrizes.length === 0) {
-                            throw new Error("Paid Scrim must have at least one winning prize set.");
+                        if (winningPrizes.length === 0 && perKillPrize === 0) {
+                            throw new Error("Paid Scrim must have at least one rank prize or a per-kill prize set.");
                         }
                     } else { entryFee = 0; winningPrizes = []; totalPrizePool = 0; }
                     
                     let totalDeductionFromLive = creationFee;
-                    if (entryFee === 0 && totalPrizePool > 0 && !editingPostId) {
+                    if (entryFee === 0 && (totalPrizePool > 0 || perKillPrize > 0) && !editingPostId) {
                          totalDeductionFromLive += totalPrizePool;
+                         if (perKillPrize > 0) {
+                            const estimatedKills = 10;
+                            totalDeductionFromLive += perKillPrize * estimatedKills * (parseInt(document.getElementById('post-total-slots').value) || 0);
+                         }
                     }
     
-                    const sponsorLiveBalance = currentUserData.wallet.live || 0;
-                    if (sponsorLiveBalance < totalDeductionFromLive) {
-                         throw new Error(`Insufficient balance. You need ${totalDeductionFromLive.toFixed(2)} TK to create this event. Your balance is ${sponsorLiveBalance.toFixed(2)} TK.`);
+                    if ((currentUserData.wallet.live || 0) < totalDeductionFromLive) {
+                         throw new Error(`Insufficient balance. You need ${totalDeductionFromLive.toFixed(2)} TK to create this event. Your balance is ${(currentUserData.wallet.live || 0).toFixed(2)} TK.`);
                     }
                     
                     const fixedRules = Array.from(document.querySelectorAll('#rules-container p')).map(p => p.textContent.trim());
@@ -1031,8 +995,7 @@
 
                     let maps, numMatches;
                     if (battleType === 'Clash Squad') {
-                        maps = ['Bermuda'];
-                        numMatches = 1;
+                        maps = ['Bermuda']; numMatches = 1;
                     } else {
                         maps = Array.from(mapContainer.querySelectorAll('input:checked')).map(cb => cb.value);
                         numMatches = parseInt(numMatchesSelect.value);
@@ -1040,9 +1003,9 @@
                     const eventName = document.getElementById('post-event-name').value;
     
                     const postData = { 
-                        author: { name: currentUserData.name, avatar: currentUserData.avatar || DEFAULT_AVATAR }, authorId: auth.currentUser.uid, imageUrl: imageInfo.url, imageSizeKB: imageInfo.size, entryFee, matchDate: matchStartFullDate.toISOString(),
-                        details: { eventType, eventName: eventName, matchType: battleType, teamType: document.getElementById('post-team-type').value, numMatches: numMatches, maps: maps, winningPrizes, rules, tags: document.getElementById('post-tags').value.split(',').map(tag => tag.trim()).filter(Boolean).slice(0, 5), idPassTime: document.getElementById('post-idpass-time').value, matchStartTime: document.getElementById('post-matchstart-time').value },
-                        creationFee: creationFee
+                        authorId: auth.currentUser.uid, imageUrl: imageInfo.url, imageSizeKB: imageInfo.size, entryFee, matchDate: matchStartFullDate.toISOString(),
+                        details: { eventType, eventName, matchType: battleType, teamType: document.getElementById('post-team-type').value, numMatches, maps, winningPrizes, perKillPrize, rules, tags: document.getElementById('post-tags').value.split(',').map(tag => tag.trim()).filter(Boolean).slice(0, 5), idPassTime: document.getElementById('post-idpass-time').value, matchStartTime: document.getElementById('post-matchstart-time').value },
+                        creationFee
                     };
     
                     const updates = {};
@@ -1056,24 +1019,12 @@
                         const newPost = { ...postData, id: postId, timestamp: new Date().toISOString(), slots: { booked: 0, total: parseInt(document.getElementById('post-total-slots').value) }, status: 'upcoming' };
                         updates['/posts/' + postId] = newPost;
                         if(totalDeductionFromLive > 0) {
-                            updates[`/users/${auth.currentUser.uid}/wallet/live`] = sponsorLiveBalance - totalDeductionFromLive;
-                        }
-                        if (entryFee === 0 && totalPrizePool > 0) {
-                             updates[`/users/${auth.currentUser.uid}/wallet/event`] = (currentUserData.wallet.event || 0) + totalPrizePool;
-                        }
-                        if (creationFee > 0) {
-                            const transactionRef = database.ref(`users/${auth.currentUser.uid}/transactions`).push();
-                            updates[`users/${auth.currentUser.uid}/transactions/${transactionRef.key}`] = {
-                                id: transactionRef.key, type: 'Fee', description: `Match Creation: ${eventName}`,
-                                amount: -creationFee, status: 'completed', timestamp: new Date().toISOString()
-                            };
+                            updates[`/users/${auth.currentUser.uid}/wallet/live`] = (currentUserData.wallet.live || 0) - totalDeductionFromLive;
                         }
                     }
                     
                     await database.ref().update(updates);
-                    updateTotalStorage(sizeDifference);
-                    const action = editingPostId ? 'Updated' : 'Created';
-                    showModal('success', `Post ${action}!`, `Your match post has been successfully ${action}.`, 'Awesome!', () => {
+                    showModal('success', `Post ${editingPostId ? 'Updated' : 'Created'}!`, `Your match post has been successfully ${editingPostId ? 'updated' : 'created'}.`, 'Awesome!', () => {
                         setActiveNavItem(document.getElementById('nav-manage-posts'));
                         navigateToPage('manage-posts-content');
                     });
@@ -1106,9 +1057,15 @@
                 updateFormForMatchType();
             }
            
-            const navItems = document.querySelectorAll('.nav-item'), navIndicator = document.getElementById('nav-indicator'); const allHeaders = document.querySelectorAll('header'); const transitionOverlay = document.getElementById('page-transition-overlay');
-            const updateNavIndicator = (activeItem) => { if (activeItem) { navIndicator.style.width = `${activeItem.offsetWidth}px`; navIndicator.style.left = `${activeItem.offsetLeft}px`; } else { navIndicator.style.width = '0px'; }};
-            const setActiveNavItem = (itemToActivate) => { navItems.forEach(i => i.classList.remove('active')); if(itemToActivate) { itemToActivate.classList.add('active'); } setTimeout(() => updateNavIndicator(itemToActivate), 400); };
+            const navItems = document.querySelectorAll('.nav-item');
+            const allHeaders = document.querySelectorAll('header'); const transitionOverlay = document.getElementById('page-transition-overlay');
+            
+            const setActiveNavItem = (itemToActivate) => { 
+                navItems.forEach(i => i.classList.remove('active')); 
+                if(itemToActivate) { 
+                    itemToActivate.classList.add('active'); 
+                }
+            };
             
             const navigateToPage = (pageId, isInitial = false) => {
                 const showNewPage = () => {
@@ -1116,37 +1073,22 @@
                      const newPage = document.getElementById(pageId); if (newPage) newPage.classList.remove('hidden');
                      allHeaders.forEach(h => h.classList.add('hidden'));
                     
-                     const pageToNavMap = {
-                        'manage-posts-content': 'nav-manage-posts',
-                        'wallet-content': 'nav-wallet',
-                        'statement-content': 'nav-statement',
-                        'mailbox-content': 'nav-mailbox',
-                        'profile-content': 'nav-profile',
-                        'history-content': 'nav-profile',
-                        'kyc-content': 'nav-profile',
-                        'feedback-content': 'nav-profile',
-                        'account-settings-content': 'nav-profile'
-                     };
-
                      const headerMap = {
-                        'wallet-content': 'main-header', 'profile-content': 'main-header', 'mailbox-content': 'main-header',
-                        'add-post-content': 'add-post-header', 
                         'manage-posts-content': 'manage-posts-header', 
+                        'add-post-content': 'add-post-header', 
                         'history-content': 'history-header',
                         'kyc-content': 'kyc-header',
                         'statement-content': 'statement-header',
                         'feedback-content': 'feedback-header',
                         'account-settings-content': 'account-settings-header',
                      };
-
                      const headerId = headerMap[pageId] || 'main-header';
                      document.getElementById(headerId).classList.remove('hidden');
 
-                     const navItemId = pageToNavMap[pageId] || null;
+                     const navItemId = { 'manage-posts-content': 'nav-manage-posts', 'add-post-content': 'nav-manage-posts', 'wallet-content': 'nav-wallet', 'statement-content': 'nav-statement', 'mailbox-content': 'nav-mailbox', 'profile-content': 'nav-profile', 'history-content': 'nav-profile', 'kyc-content': 'nav-profile', 'feedback-content': 'nav-profile', 'account-settings-content': 'nav-profile' }[pageId];
                      setActiveNavItem(document.getElementById(navItemId));
                      
                      if (pageId === 'add-post-content' && !document.getElementById('editing-post-id').value) { 
-                        // Set min date for date input
                         const today = new Date().toISOString().split('T')[0];
                         document.getElementById('post-match-date').setAttribute('min', today);
                         resetPostForm(); 
@@ -1173,6 +1115,7 @@
             navItems.forEach(item => item.addEventListener('click', (e) => { e.preventDefault(); const pageId = item.id.replace('nav-', '') + '-content'; navigateToPage(pageId); }));
             document.getElementById('wallet-button').addEventListener('click', () => navigateToPage('wallet-content')); 
             document.getElementById('header-create-post-btn').addEventListener('click', () => navigateToPage('add-post-content'));
+            document.getElementById('add-post-header').querySelector('.header-back-btn').addEventListener('click', () => navigateToPage('manage-posts-content'));
             document.getElementById('feedback-button').addEventListener('click', () => navigateToPage('feedback-content'));
             document.getElementById('history-button').addEventListener('click', () => navigateToPage('history-content'));
             document.getElementById('kyc-button').addEventListener('click', () => navigateToPage('kyc-content'));
@@ -1329,8 +1272,15 @@
                         showModal('error', 'Cannot Start Match', 'A Clash Squad match requires exactly 2 participants to start.');
                         return;
                     }
-                    const team1Data = window.dbData.users[participants[0].userId].team;
-                    const team2Data = window.dbData.users[participants[1].userId].team;
+                    const user1 = window.dbData.users[participants[0].userId];
+                    const user2 = window.dbData.users[participants[1].userId];
+                    const team1Data = user1?.team;
+                    const team2Data = user2?.team;
+
+                    if (!team1Data || !team2Data) {
+                        showModal('error', 'Team Data Missing', 'Could not find team information for one of the participants. Please ensure both participants have a valid team.');
+                        return;
+                    }
                     
                     const csResults = {
                         team1: { id: team1Data.id, name: team1Data.name, logo: team1Data.logo, rounds: 0 },
@@ -1551,6 +1501,9 @@
                             }
                         });
                     }
+                    if (postToEdit.details.perKillPrize) {
+                        document.getElementById('post-per-kill-prize').value = postToEdit.details.perKillPrize;
+                    }
 
                     const rulesContainer = document.getElementById('rules-container');
                     const fixedRulesCount = rulesContainer.querySelectorAll('p.form-input').length;
@@ -1693,7 +1646,6 @@
                     delete screens.sponsorLive.dataset.postId;
                 });
 
-                // Attach listener for the uploader
                 const uploadBtn = content.querySelector('.upload-leaderboard-btn');
                 if (uploadBtn) {
                     uploadBtn.addEventListener('click', () => handleLeaderboardImageUpload(postId));
@@ -1720,12 +1672,13 @@
                 }
             }
             
-            function renderSponsorLiveView(postId, activeTabTarget = 'sponsor-leaderboard-content') {
+            function renderSponsorLiveView(postId, activeTabTarget = 'sponsor-manage-content') {
                 const post = window.dbData.posts[postId]; if (!post) return; 
                 const content = document.getElementById('sponsor-live-view-content'); 
                 screens.sponsorLive.dataset.postId = postId;
 
-                if(post.details.matchType === 'Clash Squad') {
+                // FIX: Only render special CS management UI if the match is RUNNING.
+                if (post.details.matchType === 'Clash Squad' && post.status === 'live_match_running') {
                     renderCSLiveManagement(postId);
                     return;
                 }
@@ -1745,18 +1698,24 @@
                     }
                 }
 
+                const isCSMatch = post.details.matchType === 'Clash Squad';
+                const leaderboardTab = !isCSMatch ? `<button class="tab-button sponsor-view-tab" data-target="sponsor-leaderboard-content">Leaderboard</button>` : '';
+                const finalizeButtonText = isCSMatch ? 'Finalize CS Match' : 'Finalize';
+
                 let bottomButtons = ''; 
                 if (post.status !== 'completed' && post.status !== 'cancelled') { 
                     bottomButtons = `<div class="fixed bottom-0 left-0 w-full p-4 bg-[#1e1e1e] border-t border-gray-700 z-20 flex gap-2">
                                         ${canRevert ? `<button id="revert-to-upcoming-btn" class="flex-1 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg text-lg">Revert</button>` : ''}
-                                        <button id="send-prizes-btn" class="flex-1 py-3 action-button rounded-lg text-lg">Finalize</button>
+                                        <button id="send-prizes-btn" class="flex-1 py-3 action-button rounded-lg text-lg">${finalizeButtonText}</button>
                                     </div>`; 
                 } 
-                content.innerHTML = `<div class="sticky top-0 bg-[#121212]/80 backdrop-blur-md py-4 px-4 flex justify-between items-center z-10"><h2 class="text-2xl font-bold">${post.details.eventName}</h2><button id="close-sponsor-view-btn" class="text-gray-400 text-3xl">&times;</button></div>${emptyMatchTimerHTML}<div class="flex gap-2 mb-4 px-4"><button class="tab-button sponsor-view-tab" data-target="sponsor-manage-content">Manage</button><button class="tab-button sponsor-view-tab" data-target="sponsor-participants-content">Participants</button><button class="tab-button sponsor-view-tab" data-target="sponsor-leaderboard-content">Leaderboard</button></div><div class="px-4 pb-24 overflow-y-auto h-[calc(100%-120px)] no-scrollbar"><div id="sponsor-manage-content" class="tab-content-section"></div><div id="sponsor-participants-content" class="tab-content-section"></div><div id="sponsor-leaderboard-content" class="tab-content-section"></div></div>${bottomButtons}`; 
+                content.innerHTML = `<div class="sticky top-0 bg-[#121212]/80 backdrop-blur-md py-4 px-4 flex justify-between items-center z-10"><h2 class="text-2xl font-bold">${post.details.eventName}</h2><button id="close-sponsor-view-btn" class="text-gray-400 text-3xl">&times;</button></div>${emptyMatchTimerHTML}<div class="flex gap-2 mb-4 px-4"><button class="tab-button sponsor-view-tab" data-target="sponsor-manage-content">Manage</button><button class="tab-button sponsor-view-tab" data-target="sponsor-participants-content">Participants</button>${leaderboardTab}</div><div class="px-4 pb-24 overflow-y-auto h-[calc(100%-120px)] no-scrollbar"><div id="sponsor-manage-content" class="tab-content-section"></div><div id="sponsor-participants-content" class="tab-content-section"></div><div id="sponsor-leaderboard-content" class="tab-content-section"></div></div>${bottomButtons}`; 
                 
                 renderSponsorManageTab(postId); 
                 renderSponsorParticipantsTab(postId); 
-                renderSponsorLeaderboard(postId, 'sponsor-leaderboard-content', true); 
+                if (!isCSMatch) {
+                    renderSponsorLeaderboard(postId, 'sponsor-leaderboard-content', true); 
+                }
                 
                 screens.sponsorLive.classList.remove('hidden'); 
                 content.querySelector('#close-sponsor-view-btn').addEventListener('click', () => { screens.sponsorLive.classList.add('hidden'); delete screens.sponsorLive.dataset.postId; }); 
@@ -1776,18 +1735,149 @@
                     const revertBtn = content.querySelector('#revert-to-upcoming-btn');
                     if(sendPrizesBtn) { 
                         sendPrizesBtn.addEventListener('click', () => handleSendPrizes(postId)); 
-                        checkFinalizeButtonState(postId); 
+                        if (!isCSMatch) {
+                            checkFinalizeButtonState(postId); 
+                        }
                     } 
                     if(revertBtn) {
                         revertBtn.addEventListener('click', () => handleRevertToUpcoming(postId));
                     }
                 } 
             }
+
+            function renderCSLiveManagement(postId) {
+                const post = window.dbData.posts[postId];
+                if (!post || !post.csResults) {
+                    showModal('error', 'Match Data Error', 'Could not load Clash Squad match data.');
+                    return;
+                }
+                const content = document.getElementById('sponsor-live-view-content');
+                screens.sponsorLive.dataset.postId = postId;
+            
+                const { team1, team2, winner } = post.csResults;
+                const isFinalized = post.status === 'completed';
+            
+                let winnerBannerHTML = '';
+                if (winner) {
+                    const winnerName = winner === team1.id ? team1.name : team2.name;
+                    winnerBannerHTML = `<div class="bg-green-500/20 border border-green-400 text-green-300 p-3 rounded-lg text-center font-bold text-lg my-4">
+                                            <i class="fa-solid fa-trophy"></i> Winner: ${winnerName}
+                                        </div>`;
+                }
+            
+                content.innerHTML = `
+                    <div class="sticky top-0 bg-[#121212]/80 backdrop-blur-md py-4 px-4 flex justify-between items-center z-10">
+                        <h2 class="text-2xl font-bold">${post.details.eventName}</h2>
+                        <button id="close-sponsor-view-btn" class="text-gray-400 text-3xl">&times;</button>
+                    </div>
+                    <div class="p-4 pb-24">
+                        <h3 class="text-xl font-bold text-center mb-4">Clash Squad Management</h3>
+                        <div class="grid grid-cols-2 gap-4 items-center text-center">
+                            <!-- Team 1 -->
+                            <div class="bg-[#1e1e1e] p-3 rounded-lg">
+                                <img src="${team1.logo || DEFAULT_AVATAR}" class="w-16 h-16 rounded-full mx-auto mb-2 border-2 border-gray-600">
+                                <p class="font-semibold truncate">${team1.name}</p>
+                                <div class="flex items-center justify-center gap-4 my-3">
+                                    <button class="cs-score-btn bg-red-600 w-8 h-8 rounded-full text-lg" data-team="team1" data-op="decrement" ${isFinalized ? 'disabled' : ''}>-</button>
+                                    <span class="text-4xl font-bold">${team1.rounds}</span>
+                                    <button class="cs-score-btn bg-green-600 w-8 h-8 rounded-full text-lg" data-team="team1" data-op="increment" ${isFinalized ? 'disabled' : ''}>+</button>
+                                </div>
+                            </div>
+                            <!-- Team 2 -->
+                            <div class="bg-[#1e1e1e] p-3 rounded-lg">
+                                <img src="${team2.logo || DEFAULT_AVATAR}" class="w-16 h-16 rounded-full mx-auto mb-2 border-2 border-gray-600">
+                                <p class="font-semibold truncate">${team2.name}</p>
+                                <div class="flex items-center justify-center gap-4 my-3">
+                                    <button class="cs-score-btn bg-red-600 w-8 h-8 rounded-full text-lg" data-team="team2" data-op="decrement" ${isFinalized ? 'disabled' : ''}>-</button>
+                                    <span class="text-4xl font-bold">${team2.rounds}</span>
+                                    <button class="cs-score-btn bg-green-600 w-8 h-8 rounded-full text-lg" data-team="team2" data-op="increment" ${isFinalized ? 'disabled' : ''}>+</button>
+                                </div>
+                            </div>
+                        </div>
+            
+                        ${winnerBannerHTML}
+            
+                        ${createLeaderboardUploaderHTML(postId, post.leaderboardImage)}
+                    </div>
+                    ${!isFinalized ? `
+                    <div class="fixed bottom-0 left-0 w-full p-4 bg-[#1e1e1e] border-t border-gray-700 z-20">
+                        <button id="finalize-cs-btn" class="w-full py-3 action-button rounded-lg text-lg" ${!winner ? 'disabled' : ''}>
+                            ${!winner ? 'Declare a Winner to Finalize' : 'Finalize & Send Prizes'}
+                        </button>
+                    </div>` : ''}
+                `;
+            
+                screens.sponsorLive.classList.remove('hidden');
+            
+                // Event Listeners
+                content.querySelector('#close-sponsor-view-btn').addEventListener('click', () => {
+                    screens.sponsorLive.classList.add('hidden');
+                    delete screens.sponsorLive.dataset.postId;
+                });
+            
+                if (!isFinalized) {
+                    content.querySelectorAll('.cs-score-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const teamKey = e.currentTarget.dataset.team;
+                            const operation = e.currentTarget.dataset.op;
+                            const currentPostState = window.dbData.posts[postId];
+                            if (!currentPostState || !currentPostState.csResults) return;
+            
+                            const { team1, team2 } = currentPostState.csResults;
+                            let currentRounds = currentPostState.csResults[teamKey].rounds;
+                            let newRounds = operation === 'increment' ? currentRounds + 1 : currentRounds - 1;
+            
+                            if (newRounds < 0 || newRounds > 10) return;
+
+                            if (operation === 'increment') {
+                                if (teamKey === 'team1' && team2.rounds >= 10) {
+                                    showModal('error', 'Invalid Score', 'Please reduce the other team\'s score below 10 first.');
+                                    return;
+                                }
+                                if (teamKey === 'team2' && team1.rounds >= 10) {
+                                    showModal('error', 'Invalid Score', 'Please reduce the other team\'s score below 10 first.');
+                                    return;
+                                }
+                            }
+            
+                            const updates = {};
+                            updates[`/posts/${postId}/csResults/${teamKey}/rounds`] = newRounds;
+
+                            const team1Rounds = teamKey === 'team1' ? newRounds : currentPostState.csResults.team1.rounds;
+                            const team2Rounds = teamKey === 'team2' ? newRounds : currentPostState.csResults.team2.rounds;
+
+                            let newWinner = null;
+                            if (team1Rounds === 10) {
+                                newWinner = currentPostState.csResults.team1.id;
+                            } else if (team2Rounds === 10) {
+                                newWinner = currentPostState.csResults.team2.id;
+                            }
+                            updates[`/posts/${postId}/csResults/winner`] = newWinner;
+                            
+                            try {
+                                await database.ref().update(updates);
+                            } catch(err) {
+                                handleFirebaseError(err);
+                            }
+                        });
+                    });
+                    
+                    const finalizeBtn = content.querySelector('#finalize-cs-btn');
+                    if(finalizeBtn) {
+                        finalizeBtn.addEventListener('click', () => handleCSSendPrizes(postId));
+                    }
+                }
+                
+                const uploadBtn = content.querySelector('.upload-leaderboard-btn');
+                if (uploadBtn) {
+                    uploadBtn.addEventListener('click', () => handleLeaderboardImageUpload(postId));
+                }
+            }
             
             function renderSponsorLeaderboard(postId, containerId = 'sponsor-leaderboard-content', allowEdit = true) {
                 const post = window.dbData.posts[postId];
                 const container = document.getElementById(containerId);
-                if (!container) return;
+                if (!container || !post) return;
                 const resultsSource = post['approvedResults'] || {};
                 const isSolo = post.details.teamType.toLowerCase() === 'solo';
                 const isMatchRunning = post.status === 'live_match_running';
@@ -1966,8 +2056,9 @@
                     }
                 }
             
-                // Add Leaderboard Uploader
-                actionsHTML += createLeaderboardUploaderHTML(postId, post.leaderboardImage);
+                if (post.details.matchType !== 'Clash Squad') {
+                    actionsHTML += createLeaderboardUploaderHTML(postId, post.leaderboardImage);
+                }
             
                 container.innerHTML = `<div class="space-y-4 max-w-sm mx-auto">${actionsHTML}</div>`;
                 container.querySelector('.set-idpass-btn')?.addEventListener('click', () => showIdPassModal(postId));
@@ -1979,7 +2070,6 @@
                     });
                 });
             
-                // Attach listener for the uploader
                 const uploadBtn = container.querySelector('.upload-leaderboard-btn');
                 if (uploadBtn) {
                     uploadBtn.addEventListener('click', () => handleLeaderboardImageUpload(postId));
@@ -2012,7 +2102,7 @@
                            
                             let totalPrizesPaid = 0;
                             const prizeInfo = (post.details.winningPrizes || []).find(p => p.rank === 'Top 1');
-                            if (prizeInfo && prizeInfo.prize > 0) {
+                            if (post.details.eventType === 'paid' && prizeInfo && prizeInfo.prize > 0) {
                                 totalPrizesPaid = prizeInfo.prize;
                             }
 
@@ -2032,7 +2122,7 @@
                                     break;
                                 }
                             }
-                            if (winnerUserId && prizeInfo && prizeInfo.prize > 0) {
+                            if (winnerUserId && post.details.eventType === 'paid' && prizeInfo && prizeInfo.prize > 0) {
                                 updates[`/posts/${postId}/winnings/${winnerUserId}`] = {
                                     amount: prizeInfo.prize,
                                     rank: 1,
@@ -2111,6 +2201,31 @@
                                         }
                                     }
                                 });
+                                
+                                if (post.details.perKillPrize > 0) {
+                                    Object.entries(post.approvedResults || {}).forEach(([userId, userResults]) => {
+                                        let totalKills = 0;
+                                        Object.values(userResults).forEach(map => { totalKills += (parseInt(map.kills) || 0); });
+                                        
+                                        if (totalKills > 0) {
+                                            const perKillWinnings = totalKills * post.details.perKillPrize;
+                                            totalPrizesPaid += perKillWinnings;
+                                            
+                                            if (updates[`/posts/${postId}/winnings/${userId}`]) {
+                                                updates[`/posts/${postId}/winnings/${userId}`].amount += perKillWinnings;
+                                            } else {
+                                                 const rankIndex = finalRankings.findIndex(r => r.userId === userId);
+                                                 const rank = rankIndex !== -1 ? rankIndex + 1 : 'N/A';
+                                                 updates[`/posts/${postId}/winnings/${userId}`] = {
+                                                    amount: perKillWinnings,
+                                                    rank: rank,
+                                                    claimed: false,
+                                                    points: finalRankings[rankIndex]?.totalPoints || 0
+                                                };
+                                            }
+                                        }
+                                    });
+                                }
 
                                 const totalIncome = (post.slots.booked || 0) * post.entryFee;
                                 const profit = totalIncome - totalPrizesPaid;
@@ -2381,49 +2496,54 @@
             async function renderTransactionsTab() {
                 const container = document.getElementById('transactions-section');
                 container.innerHTML = `<div class="text-center p-8"><div class="spinner mx-auto"></div></div>`;
+                const uid = auth.currentUser.uid;
+                const txRef = database.ref(`users/${uid}/transactions`).orderByChild('timestamp');
 
-                const txRef = database.ref(`users/${auth.currentUser.uid}/transactions`);
-                const depRef = database.ref('deposits').orderByChild('userId').equalTo(auth.currentUser.uid);
-                const withRef = database.ref('withdrawals').orderByChild('userId').equalTo(auth.currentUser.uid);
+                try {
+                    const snapshot = await txRef.once('value');
+                    let allHistory = [];
+                    if (snapshot.exists()) {
+                        snapshot.forEach(snap => {
+                            allHistory.push(snap.val());
+                        });
+                    }
+                    allHistory.reverse(); // To show the newest transactions first
 
-                const [txSnap, depSnap, withSnap] = await Promise.all([txRef.once('value'), depSnap.once('value'), withSnap.once('value')]);
+                    if (allHistory.length === 0) {
+                        container.innerHTML = `<p class="text-gray-500 text-center p-8">No transaction history found.</p>`;
+                        return;
+                    }
 
-                let allHistory = [];
-                txSnap.forEach(snap => allHistory.push({ ...snap.val(), source: 'tx' }));
-                depSnap.forEach(snap => allHistory.push({ ...snap.val(), source: 'dep', type: 'Deposit', description: `Deposit via ${snap.val().method}` }));
-                withSnap.forEach(snap => allHistory.push({ ...snap.val(), source: 'with', type: 'Withdrawal', description: `Withdrawal to ${snap.val().method}` }));
+                    const historyHTML = allHistory.map(item => {
+                        const amount = parseFloat(item.amount);
+                        const isCredit = amount > 0;
+                        const amountColor = isCredit ? 'text-green-400' : 'text-red-400';
+                        const sign = isCredit ? '+' : '';
+                        
+                        let statusHTML = '';
+                        const status = item.status || 'completed';
+                        if (status === 'pending') statusHTML = `<span class="tx-status tx-status-pending">Pending</span>`;
+                        else if (status === 'approved' || status === 'completed') statusHTML = `<span class="tx-status tx-status-approved">Completed</span>`;
+                        else if (status === 'rejected') statusHTML = `<span class="tx-status tx-status-rejected">Rejected</span>`;
 
-                allHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-                if (allHistory.length === 0) {
-                    container.innerHTML = `<p class="text-gray-500 text-center p-8">No transaction history found.</p>`;
-                    return;
+                        return `<div class="bg-[#1e1e1e] border-l-4 ${isCredit ? 'border-green-500' : 'border-red-500'} rounded-r-lg p-3 flex justify-between items-center">
+                                    <div>
+                                        <p class="font-semibold text-sm">${item.type}: ${item.description || ''}</p>
+                                        <p class="text-xs text-gray-400">${new Date(item.timestamp).toLocaleString()}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-lg ${amountColor}">${sign}${amount.toFixed(2)} TK</p>
+                                        ${statusHTML}
+                                    </div>
+                                </div>`;
+                    }).join('');
+                    container.innerHTML = `<div class="space-y-2">${historyHTML}</div>`;
+                } catch(error) {
+                    console.error("Error fetching transactions:", error);
+                    container.innerHTML = `<p class="text-red-400 text-center p-8">Could not load transaction history.</p>`;
                 }
-
-                const historyHTML = allHistory.map(item => {
-                    const amount = parseFloat(item.amount);
-                    const isCredit = item.source === 'dep' || (item.source === 'tx' && amount > 0);
-                    const amountColor = isCredit ? 'text-green-400' : 'text-red-400';
-                    const sign = isCredit ? '+' : '';
-                    
-                    let statusHTML = '';
-                    if (item.status === 'pending') statusHTML = `<span class="tx-status tx-status-pending">Pending</span>`;
-                    else if (item.status === 'approved' || item.status === 'completed') statusHTML = `<span class="tx-status tx-status-approved">Completed</span>`;
-                    else if (item.status === 'rejected') statusHTML = `<span class="tx-status tx-status-rejected">Rejected</span>`;
-
-                    return `<div class="bg-[#1e1e1e] border-l-4 ${isCredit ? 'border-green-500' : 'border-red-500'} rounded-r-lg p-3 flex justify-between items-center">
-                                <div>
-                                    <p class="font-semibold text-sm">${item.description}</p>
-                                    <p class="text-xs text-gray-400">${new Date(item.timestamp).toLocaleString()}</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="font-bold text-lg ${amountColor}">${sign}${amount.toFixed(2)}</p>
-                                    ${statusHTML}
-                                </div>
-                            </div>`;
-                }).join('');
-                container.innerHTML = `<div class="space-y-2">${historyHTML}</div>`;
             }
+
 
             document.getElementById('statement-content').addEventListener('click', e => {
                 const transferBtn = e.target.closest('.transfer-profit-btn');
@@ -2443,7 +2563,7 @@
                                 
                                 const transactionRef = database.ref(`users/${auth.currentUser.uid}/transactions`).push();
                                 updates[`/users/${auth.currentUser.uid}/transactions/${transactionRef.key}`] = {
-                                    id: transactionRef.key, type: 'Profit', description: `Profit from: ${window.dbData.posts[postId]?.details.eventName || 'match'}`,
+                                    id: transactionRef.key, type: 'Profit', description: `From: ${window.dbData.posts[postId]?.details.eventName || 'match'}`,
                                     amount: profit, status: 'completed', timestamp: new Date().toISOString()
                                 };
                                 
@@ -2466,8 +2586,9 @@
             function checkFinalizeButtonState(postId) {
                 const post = window.dbData.posts[postId];
                 const sendPrizesBtn = document.getElementById('send-prizes-btn');
-                if (!sendPrizesBtn) return;
-                
+                if (!sendPrizesBtn || !post) return;
+                if (post.details.matchType === 'Clash Squad') return;
+
                 const participantUserIds = Object.values(post.participants || {}).map(p => p.userId);
                 const approvedResults = post.approvedResults || {};
                 
@@ -2740,15 +2861,35 @@
             async function submitDepositRequest() {
                 const { method, amount, trxId } = currentPaymentData;
                 const depositId = database.ref('deposits').push().key;
-                await database.ref('deposits/' + depositId).set({ id: depositId, userId: auth.currentUser.uid, userName: currentUserData.name, method, amount, trxId, timestamp: new Date().toISOString(), status: 'pending' });
+                const updates = {};
+                updates['/deposits/' + depositId] = { id: depositId, userId: auth.currentUser.uid, userName: currentUserData.name, method, amount, trxId, timestamp: new Date().toISOString(), status: 'pending' };
+                updates[`/users/${auth.currentUser.uid}/transactions/${depositId}`] = {
+                    id: depositId,
+                    type: 'Deposit',
+                    description: `via ${method}`,
+                    amount: amount,
+                    status: 'pending',
+                    timestamp: new Date().toISOString()
+                };
+                await database.ref().update(updates);
                 screens.payment.classList.add('hidden');
                 showCustomModal({ type: 'success', title: 'Request Sent', message: 'Your deposit request is under review. Funds will be added upon approval.', primaryButton: { text: 'OK' } });
             }
             async function submitWithdrawRequest() {
                 const { method, amount, accountNumber } = currentPaymentData;
-                await database.ref(`users/${auth.currentUser.uid}/wallet/live`).set((currentUserData.wallet?.live || 0) - amount);
                 const withdrawId = database.ref('withdrawals').push().key;
-                await database.ref('withdrawals/' + withdrawId).set({ id: withdrawId, userId: auth.currentUser.uid, userName: currentUserData.name, method, amount, accountNumber, timestamp: new Date().toISOString(), status: 'pending' });
+                const updates = {};
+                updates['/withdrawals/' + withdrawId] = { id: withdrawId, userId: auth.currentUser.uid, userName: currentUserData.name, method, amount, accountNumber, timestamp: new Date().toISOString(), status: 'pending' };
+                updates[`/users/${auth.currentUser.uid}/transactions/${withdrawId}`] = {
+                    id: withdrawId,
+                    type: 'Withdrawal',
+                    description: `to ${accountNumber} via ${method}`,
+                    amount: -amount,
+                    status: 'pending',
+                    timestamp: new Date().toISOString()
+                };
+                updates[`/users/${auth.currentUser.uid}/wallet/live`] = (currentUserData.wallet?.live || 0) - amount;
+                await database.ref().update(updates);
                 screens.payment.classList.add('hidden');
                 showCustomModal({ type: 'success', title: 'Request Sent', message: 'Your withdrawal request has been submitted and will be processed within 24 hours.', primaryButton: { text: 'OK' } });
             }
@@ -2955,7 +3096,6 @@
                 if (!uid) return;
                 const sevenDaysAgoISO = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
                 
-                // Cleanup old posts
                 try {
                     const postsRef = database.ref('posts');
                     const snapshot = await postsRef.orderByChild('authorId').equalTo(uid).once('value');
@@ -2972,7 +3112,6 @@
                     }
                 } catch (error) { console.error("Error cleaning up old posts:", error); }
 
-                // Cleanup old transactions
                 try {
                     const transactionsRef = database.ref(`users/${uid}/transactions`);
                     const snapshot = await transactionsRef.orderByChild('timestamp').endAt(sevenDaysAgoISO).once('value');
@@ -3022,8 +3161,17 @@
                     await database.ref(`posts/${postId}/leaderboardImage`).set(uploadResult.url);
             
                     showModal('success', 'Upload Successful', 'The leaderboard image has been updated.');
-                    // Optionally, re-render the view to show the new image immediately
-                    renderSponsorLiveView(postId); 
+                    
+                    const post = window.dbData.posts[postId];
+                    if(post.status === 'completed' || post.status === 'cancelled') {
+                        renderSponsorHistoryView(postId);
+                    } else if (post.status.startsWith('live')) {
+                        if (post.details.matchType === 'Clash Squad') {
+                             renderCSLiveManagement(postId);
+                        } else {
+                            renderSponsorLiveView(postId, 'sponsor-manage-content');
+                        }
+                    }
                 } catch (error) {
                     handleFirebaseError(error);
                 }
